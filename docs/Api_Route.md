@@ -1,3 +1,5 @@
+OpenAPI Specification is located at `/swagger.json` of this repo.
+
 ## Api Routes
 
 ### Data Types
