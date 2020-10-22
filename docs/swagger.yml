@@ -29,6 +29,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /user/{username}:
     get:
       summary: 'Get a User by username.'
       operationId: listUser
