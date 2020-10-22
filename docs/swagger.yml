@@ -31,18 +31,18 @@ paths:
                 $ref: '#/components/schemas/Error'
   /user/{username}:
     get:
-      summary: 'Get an array of all Users.'
+      summary: 'Get a User by username.'
       operationId: listUser
       tags:
         - user
       parameters:
-        - name: id
+        - name: username
           in: path
-          description: ID of the user
+          description: username of the user
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: string
       responses:
         '200':
           description: 'Sample response: Details about a user by ID'
