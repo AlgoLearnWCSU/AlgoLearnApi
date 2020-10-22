@@ -3,11 +3,11 @@ info:
   version: 0.0.0
   title: AlgoLearn
 servers:
-  - url: 'http://localhost:8000'
+  - url: 'http://localhost:8080'
 paths:
   /user:
     get:
-      summary: 'Sample endpoint: Returns details about a particular user'
+      summary: 'This request will return a JSON body with an array of User object.'
       operationId: listUser
       tags:
         - user
