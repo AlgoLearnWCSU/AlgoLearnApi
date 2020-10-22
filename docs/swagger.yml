@@ -7,13 +7,37 @@ servers:
 paths:
   /user:
     get:
-      summary: 'This request will return a JSON body with an array of User object.'
+      summary: 'Get an array of all Users.'
+      operationId: listUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: 'Sample response: Details about a user by ID'
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/{username}:
+    get:
+      summary: 'Get an array of all Users.'
       operationId: listUser
       tags:
         - user
       parameters:
         - name: id
-          in: query
+          in: path
           description: ID of the user
           required: true
           schema:
