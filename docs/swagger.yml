@@ -10,7 +10,7 @@ paths:
       summary: 'Get an array of all Users.'
       operationId: listUser
       tags:
-        - user
+        - User
       responses:
         '200':
           description: 'Sample response: Details about a user by ID'
@@ -34,7 +34,7 @@ paths:
       summary: 'Get a User by username.'
       operationId: listUser
       tags:
-        - user
+        - User
       parameters:
         - name: username
           in: path
