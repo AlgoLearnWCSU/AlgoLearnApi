@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
   version: 0.0.0
-  title: AlgoLear
+  title: AlgoLearn
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://localhost:8000'
 paths:
   /user:
     get:
