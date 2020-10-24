@@ -12,6 +12,7 @@ class Problem {
     var id: Int? = null
 
     @Column(nullable = false)
+    @Lob
     var description: String? = null
 
     @Column(nullable = false)
