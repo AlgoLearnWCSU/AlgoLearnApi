@@ -19,7 +19,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/components/schemas/Response User"
   /user/{username}:
     get:
       summary: "Get a User by username."
@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/Response User"
     post:
       summary: "Create a new user."
       operationId: createUser
@@ -60,14 +60,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/Request User"
       responses:
         "200":
           description: "User Created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/Response User"
     patch:
       summary: "Modify an existing user by username."
       operationId: modifyUser
@@ -103,7 +103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/Response User"
     put:
       summary: "Replace an existing user by username."
       operationId: replaceUser
@@ -123,14 +123,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/Request User"
       responses:
         "200":
           description: "User Replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/Response User"
   /user/search:
     get:
       summary: "Search a User by username."
@@ -160,10 +160,187 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/components/schemas/Response User"
+  /problem:
+    get:
+      summary: "Get all problems"
+      operationId: listProblems
+      tags:
+        - Problem
+      responses:
+        "200":
+          description: "A list of all problems"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Problem"
+  /problem/{problemId}:
+    get:
+      summary: "Get a problem by ID."
+      operationId: getProblem
+      tags:
+        - Problem
+      parameters:
+        - name: problemId
+          in: path
+          description: "ID of the problem"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Details about a problem by ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Problem"
+    post:
+      summary: "Create a new problem."
+      operationId: createProblem
+      tags:
+        - Problem
+      parameters:
+        - name: problemId
+          in: path
+          description: "ID of the problem"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Problem object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Problem"
+      responses:
+        "200":
+          description: "Problem Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Problem"
+    patch:
+      summary: "Modify an existing problem by ID."
+      operationId: modifyProblem
+      tags:
+        - Problem
+      parameters:
+        - name: problemId
+          in: path
+          description: "ID of the problem"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Problem object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                problemid:
+                  type: integer
+                poster:
+                  type: string
+                reviewed:
+                  type: boolean
+                description:
+                  type: string
+      responses:
+        "200":
+          description: "Problem Modified"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Problem"
+    put:
+      summary: "Replace an existing problem by ID."
+      operationId: replaceProblem
+      tags:
+        - Problem
+      parameters:
+        - name: problemId
+          in: path
+          description: "ID of the problem"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Problem object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Problem"
+      responses:
+        "200":
+          description: "Problem Replaced"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Problem"
+  /problem/search:
+    get:
+      summary: "Search for a Problem."
+      operationId: searchProblem
+      tags:
+        - Problem
+      parameters:
+        - name: poster
+          in: query
+          description: "Part or all of the username of the poster"
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: "Page number of search results"
+          required: false
+          schema:
+            type: integer
+        - name: reviewed
+          in: query
+          description: "Whether or not the problem has been reviewed by admins"
+          required: false
+          schema:
+            type: boolean
+        - name: description
+          in: query
+          description: "The poster's description of the problem"
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "List of problems"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Problem"
 components:
   schemas:
-    User:
+    Request User:
+      type: object
+      required:
+        - username
+        - name
+        - email
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        admin:
+          type: boolean
+    Response User:
       type: object
       required:
         - username
@@ -179,6 +356,112 @@ components:
           type: string
         admin:
           type: boolean
+    Request Problem:
+      type: object
+      required:
+      - poster
+      - description
+      properties:
+        poster:
+          type: string
+        description:
+          type: string
+    Response Problem: 
+      type: object
+      required:
+      - problemId
+      - poster
+      - reviewed
+      - description
+      properties:
+        problemid:
+          type: integer
+        poster:
+          type: string
+        reviewed:
+          type: boolean
+        description:
+          type: string
+    Parameter: 
+      type: object
+      required: 
+        - problem
+        - name
+      properties: 
+        problem: 
+          type: integer
+        name:
+          type: string
+    Test Case:
+      type: object
+      required: 
+        - tcid
+        - problem
+        - public
+        - sampleInput
+        - expectedOutput
+      properties:
+        tcid:
+          type: integer
+        problem:
+          type: integer
+        public:
+          type: boolean
+        sampleInput: 
+          type: string
+        expectedOutput:
+          type: string
+    Request Solution:
+      type: object
+      required: 
+        - solver
+        - problem
+        - code
+      properties:
+        solver:
+          type: string
+        problem:
+          type: integer
+        code:
+          type: string
+    Response Solution:
+      type: object
+      required: 
+        - solver
+        - problem
+        - code
+        - passedTests
+        - compTime
+        - totalTests
+      properties:
+        solver:
+          type: string
+        problem:
+          type: integer
+        code:
+          type: string
+        passedTests:
+          type: integer
+        compTime:
+          type: double
+        totalTests:
+          type: integer
+    Comment:
+      type: object
+      required: 
+        - commenter
+        - problem
+        - timestand
+        - comment
+      properties:
+        commenter:
+          type: string
+        problem:
+          type: integer
+        timestamp:
+          type: string
+        comment: 
+          type: string
     Error:
       type: object
       required:
