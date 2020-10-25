@@ -382,7 +382,7 @@ paths:
           content: 
             application/json:
               schema:
-                $ref: "#components/schemas/Parameter"
+                $ref: "#/components/schemas/Parameter"
     patch:
       summary: "Modify an existing parameter by its problem and name."
       operationId: modifyParameter
