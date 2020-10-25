@@ -534,7 +534,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/schemas/Response Test Case"
+              $ref: "#/components/schemas/Response Test Case"
     patch:
       summary: "Modify an existing test case by ID."
       operationId: modifyTestCase
