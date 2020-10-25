@@ -133,7 +133,7 @@ paths:
                 $ref: "#/components/schemas/Response User"
   /user/search:
     get:
-      summary: "Search a User by username."
+      summary: "Search for a user."
       operationId: searchUser
       tags:
         - User
@@ -144,14 +144,30 @@ paths:
           required: false
           schema:
             type: string
-            format: string
         - name: page
           in: query
           description: "Page number of search results"
           required: false
           schema:
             type: integer
-            format: int64
+        - name: name
+          in: query
+          description: "The name of the user"
+          required: false
+          schema:
+            type: string 
+        - name: email
+          in: query
+          description: "The email of the user"
+          required: false
+          schema:
+            type: string
+        - name: admin
+          in: query
+          description: "Whether or not the user is an admin"
+          required: false
+          schema:
+            type: boolean
       responses:
         "200":
           description: "List of users"
