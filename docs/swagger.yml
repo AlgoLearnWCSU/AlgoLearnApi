@@ -53,7 +53,7 @@ paths:
           required: true
           schema:
             type: string
-            format: string
+        - $ref: "#/components/parameters/Auth Token"
       requestBody:
         description: "User object to create"
         required: true
@@ -1053,6 +1053,14 @@ paths:
         "200":
           description: "User logged out"
 components:
+  parameters:
+    Auth Token:
+      name: Authorization
+      in: header
+      description: "Authorization token"
+      requred: true
+      schema:
+        type: string
   schemas:
     Request User:
       type: object
