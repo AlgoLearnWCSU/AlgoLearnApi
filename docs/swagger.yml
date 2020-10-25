@@ -323,6 +323,170 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response Problem"
+  /testcase:
+    get: 
+      summary: "Get all test cases"
+      operationId: listTestCases
+      tags:
+        - Test Case
+      responses:
+        "200":
+          description: "A list of all test cases"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Test Case"
+    post:
+      summary: "Create a new test case."
+      operationId: createTestCase
+      tags:
+        - Test Case
+      requestBody:
+        description: "Test case object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Test Case"
+      responses:
+        "200":
+          description: "Test case created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Test Case"
+  /testcase/{problemId}:
+    get:
+      summary: "Get a test case by problem."
+      operationId: getTestCase
+      tags:
+        - Test Case
+      parameters:
+        - name: problemId
+          in: path
+          description: "ID of the problem that the test case is meant to test"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Details about a test case by problem"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Test Case"
+  /testcase/{tcid}:
+    patch:
+      summary: "Modify an existing test case by ID."
+      operationId: modifyTestCase
+      tags:
+        - Test Case
+      parameters:
+        - name: tcid
+          in: path
+          description: "ID of the test case"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Test case object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tcid:
+                  type: integer
+                problem:
+                  type: integer
+                public:
+                  type: boolean
+                sampleInput:
+                  type: string
+                expectedOutput:
+                  type: string
+      responses:
+        "200":
+          description: "Test case Modified"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Test Case"
+    put:
+      summary: "Replace an existing test case by ID."
+      operationId: replaceProblem
+      tags:
+        - Test Case
+      parameters:
+        - name: tcid
+          in: path
+          description: "ID of the test case"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Problem object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Test Case"
+      responses:
+        "200":
+          description: "Problem Replaced"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Test Case"
+  /testcase/search:
+    get:
+      summary: "Search for a test case."
+      operationId: searchTestCase
+      tags:
+        - Test Case
+      parameters:
+        - name: problem
+          in: query
+          description: "Part or all of the ID of this test case's problem"
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: "Page number of search results"
+          required: false
+          schema:
+            type: integer
+        - name: public
+          in: query
+          description: "Whether or not the test case is public"
+          required: false
+          schema:
+            type: boolean
+        - name: sampleInput
+          in: query
+          description: "The data to be input to the solution by this test case"
+          required: false
+          schema:
+            type: string
+        - name: expectedOutput
+          in: query
+          description: "The output that the solution should provide"
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "List of test cases"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Test Case"
 components:
   schemas:
     Request User:
