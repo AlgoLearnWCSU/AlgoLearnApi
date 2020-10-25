@@ -590,7 +590,7 @@ paths:
                 $ref: "#/components/schemas/Response Test Case"
     put:
       summary: "Replace an existing test case by ID."
-      operationId: replaceProblem
+      operationId: replaceTestCase
       tags:
         - Test Case
       parameters:
@@ -601,7 +601,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        description: "Problem object to create"
+        description: "Test case object to create"
         required: true
         content:
           application/json:
@@ -609,7 +609,7 @@ paths:
               $ref: "#/components/schemas/Request Test Case"
       responses:
         "200":
-          description: "Problem Replaced"
+          description: "Test case replaced"
           content:
             application/json:
               schema:
