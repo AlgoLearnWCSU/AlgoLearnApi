@@ -323,6 +323,164 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response Problem"
+  /parameter:
+    get:
+      summary: "Get all pararmeters"
+      operationId: listParameters
+      tags:
+        - Parameter
+      responses:
+        "200":
+          description: "A list of all parameters"
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Parameter"
+    post:
+      summary: "Create a new parameter"
+      operationId: createParameter
+      tags:
+        - Parameter
+      requestBody:
+        description: "Parameter object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Parameter"
+      responses:
+        "200":
+          description: "Parameter created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parameter"
+  /parameter/{problem}/{name}:
+    get:
+      summary: "Get a parameter by its problem and name"
+      operationId: getParameter
+      tags:
+        - Parameter
+      parameters:
+        - name: problem
+          in: path
+          description: "ID of the problem this parameter is meant to be passed into"
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: path
+          description: "The name of the parameter"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Get a parameter by problem and name"
+          content: 
+            application/json:
+              schema:
+                $ref: "#components/schemas/Parameter"
+    patch:
+      summary: "Modify an existing parameter by its problem and name."
+      operationId: modifyParameter
+      tags:
+        - Parameter
+      parameters:
+        - name: problem
+          in: path
+          description: "ID of the parameter's problem"
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: path
+          description: "The parameter's name"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "Parameter object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Parameter"
+      responses:
+        "200":
+          description: "Parameter modified"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parameter"
+    put:
+      summary: "Replace an existing parameter with a new one"
+      operationId: replaceParameter
+      tags:
+        - Parameter
+      parameters:
+        - name: problem
+          in: path
+          description: "ID of the parameter's problem"
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: path
+          description: "The parameter's name"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "Parameter object to replace existing one with"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Parameter"
+      responses:
+        "200":
+          description: "Parameter replaced"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parameter"
+  /parameter/search:
+    get:
+      summary: "Search for a parameter"
+      operationId: searchParameter
+      tags:
+        - Parameter
+      parameters:
+        - name: problem
+          in: query
+          description: "Part or all of the ID of this parameter's problem"
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: "Page number of search results"
+          required: false
+          schema:
+            type: integer
+        - name: name
+          in: query
+          description: "The parameter's name"
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "List of parameters"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Parameter"
   /testcase:
     get:
       summary: "Get all test cases"
@@ -357,27 +515,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response Test Case"
-  /testcase/{problemId}:
+  /testcase/{tcid}:
     get:
-      summary: "Get a test case by problem."
+      summary: "Get a test case by ID"
       operationId: getTestCase
       tags:
         - Test Case
       parameters:
-        - name: problemId
+        - name: tcid
           in: path
-          description: "ID of the problem that the test case is meant to test"
+          description: "ID of test case"
           required: true
           schema:
             type: integer
-      responses:
-        "200":
-          description: "Details about a test case by problem"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Response Test Case"
-  /testcase/{tcid}:
+      requestBody:
+        description: "Test case object to retrieve"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Response Test Case"
     patch:
       summary: "Modify an existing test case by ID."
       operationId: modifyTestCase
