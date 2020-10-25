@@ -487,6 +487,178 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response Test Case"
+
+  /solution:
+    get: 
+      summary: "Get all solutions"
+      operationId: listSolutions
+      tags:
+        - Solution
+      responses:
+        "200":
+          description: "A list of all solutions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Solution"
+    post:
+      summary: "Create a new solution."
+      operationId: createSolution
+      tags:
+        - Solution
+      requestBody:
+        description: "Solution object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Solution"
+      responses:
+        "200":
+          description: "Solution created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Solution"
+  /solution/{solutionId}:
+    get:
+      summary: "Get a solution by ID."
+      operationId: getSolution
+      tags:
+        - Solution
+      parameters:
+        - name: solutionId
+          in: path
+          description: "ID of the solution"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Details about a solution by ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Solution"
+    patch:
+      summary: "Modify an existing solution by ID."
+      operationId: modifySolution
+      tags:
+        - Solution
+      parameters:
+        - name: solutionId
+          in: path
+          description: "ID of the solution"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Solution object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                solutionId:
+                  type: integer
+                solver:
+                  type: integer
+                problem:
+                  type: integer
+                code:
+                  type: string
+                passedTests:
+                  type: integer
+                compTime:
+                  type: string
+      responses:
+        "200":
+          description: "Solution modified"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Solution"
+    put:
+      summary: "Replace an existing solution by ID."
+      operationId: replaceSolution
+      tags:
+        - Solution
+      parameters:
+        - name: solutionId
+          in: path
+          description: "ID of the solution"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Solution object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Solution"
+      responses:
+        "200":
+          description: "Solution Replaced"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Solution"
+  /solution/search:
+    get:
+      summary: "Search for a solution."
+      operationId: searchSolution
+      tags:
+        - Solution
+      parameters:
+        - name: solver
+          in: query
+          description: "Part or all of the username of the user who submitted this solution"
+          required: false
+          schema:
+            type: string
+        - name: problem
+          in: query
+          description: "Part or all of the ID of this solution's problem"
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: "Page number of search results"
+          required: false
+          schema:
+            type: integer
+        - name: code
+          in: query
+          description: "Part or all of the source code in the solution"
+          required: false
+          schema:
+            type: string
+        - name: passedTests
+          in: query
+          description: "The number of test cases the solution passed"
+          required: false
+          schema:
+            type: integer
+        - name: compTime
+          in: query
+          description: "The amount of time required for the solution to run"
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "List of solutions"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Solution"
 components:
   schemas:
     Request User:
@@ -600,15 +772,24 @@ components:
         - problem
         - code
       properties:
+      solutionId:
+        type: integer
         solver:
           type: string
         problem:
           type: integer
         code:
           type: string
+        passedTests:
+          type: integer
+        compTime:
+          type: string
+        totalTests:
+          type: integer
     Response Solution:
       type: object
       required: 
+        - solutionId
         - solver
         - problem
         - code
@@ -616,6 +797,8 @@ components:
         - compTime
         - totalTests
       properties:
+        solutionId:
+          type: integer
         solver:
           type: string
         problem:
