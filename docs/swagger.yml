@@ -658,6 +658,167 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response Solution"
+  /comment:
+    get:
+      summary: "Get all Comments"
+      operationId: listComment
+      tags:
+        - Comment
+      responses:
+        "200":
+          description: "A list of all comments"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Comment"
+    post:
+      summary: "Create Comment"
+      operationId: createComment
+      tags:
+        - Comment
+      parameters:
+        - name: problemId
+          in: path
+          description: "ID of the problem"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Comment object to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Comment"
+      responses:
+        "200":
+          description: "Comment Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Comment"
+  /comment/{commentId}:
+    get:
+      summary: "Get Comment by Id"
+      operationId: getComment
+      tags:
+        - Comment
+      responses:
+        "200":
+          description: "A single Comment object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Comment"
+    patch:
+      summary: "Modify an existing Comment by ID."
+      operationId: modifyComment
+      tags:
+        - Comment
+      parameters:
+        - name: commentId
+          in: path
+          description: "ID of the Comment to modify"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Modified Comment"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+      responses:
+        "200":
+          description: "Comment Modified"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Comment"
+    put:
+      summary: "Replace an existing Comment by ID."
+      operationId: replaceComment
+      tags:
+        - Comment
+      parameters:
+        - name: commentId
+          in: path
+          description: "ID of the Comment to overwrite"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Replacing Comment object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request Comment"
+      responses:
+        "200":
+          description: "Comment Replaced"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response Comment"
+  /comment/search:
+    get:
+        summary: "Search for a Comment."
+        operationId: searchComment
+        tags:
+          - Comment
+        parameters:
+          - name: commentId
+            in: query
+            description: "Part or all of the commentId"
+            required: false
+            schema:
+              type: string
+          - name: commenter
+            in: query
+            description: "Part or all of the username of the commenter"
+            required: false
+            schema:
+              type: string
+          - name: problem
+            in: query
+            description: "Part or all of the id of the problem the comment is on"
+            required: false
+            schema:
+              type: string
+          - name: timestamp
+            in: query
+            description: "Part or all of the time the comment was posted"
+            required: false
+            schema:
+              type: string
+          - name: timestamp
+            in: query
+            description: "Part or all of the bodycomment was posted"
+            required: false
+            schema:
+              type: string
+          - name: page
+            in: query
+            description: "Page number of search results"
+            required: false
+            schema:
+              type: integer
+        responses:
+          "200":
+            description: "List of Comments"
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Response Comment"
 components:
   schemas:
     Request User:
@@ -810,7 +971,7 @@ components:
           type: double
         totalTests:
           type: integer
-    Comment:
+    Request Comment:
       type: object
       required: 
         - commenter
@@ -818,6 +979,27 @@ components:
         - timestamp
         - comment
       properties:
+        commentId:
+          type: integer
+        commenter:
+          type: string
+        problem:
+          type: integer
+        timestamp:
+          type: string
+        comment: 
+          type: string
+    Response Comment:
+      type: object
+      required: 
+        - commentId
+        - commenter
+        - problem
+        - timestamp
+        - comment
+      properties:
+        commentId:
+          type: integer
         commenter:
           type: string
         problem:
