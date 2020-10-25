@@ -392,7 +392,25 @@ components:
           type: integer
         name:
           type: string
-    Test Case:
+    Request Test Case: 
+      type: object
+      required: 
+        - problem
+        - public
+        - sampleInput
+        - expectedOutput
+      properties:
+        tcid:
+          type: integer
+        problem:
+          type: integer
+        public:
+          type: boolean
+        sampleInput: 
+          type: string
+        expectedOutput:
+          type: string
+    Response Test Case:
       type: object
       required: 
         - tcid
@@ -451,7 +469,7 @@ components:
       required: 
         - commenter
         - problem
-        - timestand
+        - timestamp
         - comment
       properties:
         commenter:
