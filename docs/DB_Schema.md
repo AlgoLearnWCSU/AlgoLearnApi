@@ -41,6 +41,8 @@ Description*
 **Solution**(
     <ins>Solver</ins>,
     <ins>Problem</ins>,
+    SolutionID*,
+    Code*,
     PassedTests*,
     CompTime*
 )
