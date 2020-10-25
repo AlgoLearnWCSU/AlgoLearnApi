@@ -487,7 +487,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response Test Case"
-
   /solution:
     get: 
       summary: "Get all solutions"
@@ -772,8 +771,8 @@ components:
         - problem
         - code
       properties:
-      solutionId:
-        type: integer
+        solutionId:
+          type: integer
         solver:
           type: string
         problem:
