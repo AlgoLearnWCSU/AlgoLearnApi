@@ -324,7 +324,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Response Problem"
   /testcase:
-    get: 
+    get:
       summary: "Get all test cases"
       operationId: listTestCases
       tags:
@@ -488,7 +488,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Response Test Case"
   /solution:
-    get: 
+    get:
       summary: "Get all solutions"
       operationId: listSolutions
       tags:
@@ -769,56 +769,116 @@ paths:
                 $ref: "#/components/schemas/Response Comment"
   /comment/search:
     get:
-        summary: "Search for a Comment."
-        operationId: searchComment
-        tags:
-          - Comment
-        parameters:
-          - name: commentId
-            in: query
-            description: "Part or all of the commentId"
-            required: false
+      summary: "Search for a Comment."
+      operationId: searchComment
+      tags:
+        - Comment
+      parameters:
+        - name: commentId
+          in: query
+          description: "Part or all of the commentId"
+          required: false
+          schema:
+            type: string
+        - name: commenter
+          in: query
+          description: "Part or all of the username of the commenter"
+          required: false
+          schema:
+            type: string
+        - name: problem
+          in: query
+          description: "Part or all of the id of the problem the comment is on"
+          required: false
+          schema:
+            type: string
+        - name: timestamp
+          in: query
+          description: "Part or all of the time the comment was posted"
+          required: false
+          schema:
+            type: string
+        - name: timestamp
+          in: query
+          description: "Part or all of the bodycomment was posted"
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: "Page number of search results"
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "List of Comments"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response Comment"
+  /auth:
+    post:
+      summary: "Sign in a user"
+      operationId: sign-in
+      tags:
+        - Authorization
+      requestBody:
+        description: "The code returned from GitHub or Microsoft via OAuth2.0"
+        required: true
+        content:
+          application/json:
             schema:
-              type: string
-          - name: commenter
-            in: query
-            description: "Part or all of the username of the commenter"
-            required: false
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+      responses:
+        "200":
+          description: "User signed in"
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                  - expire_time
+                  - refresh_token
+                  - refresh_expire_time
+                properties:
+                  access_token:
+                    type: string
+                  expire_time:
+                    type: integer
+                  refresh_token:
+                    type: string
+                  refresh_expire_time:
+                    type: integer
+    delete:
+      summary: "Sign out a user"
+      operationId: sign-out
+      tags:
+        - Authorization
+      requestBody:
+        description: "The user's access token"
+        required: true
+        content:
+          application/json:
             schema:
-              type: string
-          - name: problem
-            in: query
-            description: "Part or all of the id of the problem the comment is on"
-            required: false
-            schema:
-              type: string
-          - name: timestamp
-            in: query
-            description: "Part or all of the time the comment was posted"
-            required: false
-            schema:
-              type: string
-          - name: timestamp
-            in: query
-            description: "Part or all of the bodycomment was posted"
-            required: false
-            schema:
-              type: string
-          - name: page
-            in: query
-            description: "Page number of search results"
-            required: false
-            schema:
-              type: integer
-        responses:
-          "200":
-            description: "List of Comments"
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Response Comment"
+              type: object
+              required:
+                - access_token
+              properties:
+                access_token:
+                  type: string
+      responses:
+        "200":
+          description: "User logged out"
 components:
   schemas:
     Request User:
@@ -855,20 +915,20 @@ components:
     Request Problem:
       type: object
       required:
-      - poster
-      - description
+        - poster
+        - description
       properties:
         poster:
           type: string
         description:
           type: string
-    Response Problem: 
+    Response Problem:
       type: object
       required:
-      - problemId
-      - poster
-      - reviewed
-      - description
+        - problemId
+        - poster
+        - reviewed
+        - description
       properties:
         problemid:
           type: integer
@@ -878,19 +938,19 @@ components:
           type: boolean
         description:
           type: string
-    Parameter: 
+    Parameter:
       type: object
-      required: 
+      required:
         - problem
         - name
-      properties: 
-        problem: 
+      properties:
+        problem:
           type: integer
         name:
           type: string
-    Request Test Case: 
+    Request Test Case:
       type: object
-      required: 
+      required:
         - problem
         - public
         - sampleInput
@@ -902,13 +962,13 @@ components:
           type: integer
         public:
           type: boolean
-        sampleInput: 
+        sampleInput:
           type: string
         expectedOutput:
           type: string
     Response Test Case:
       type: object
-      required: 
+      required:
         - tcid
         - problem
         - public
@@ -921,13 +981,13 @@ components:
           type: integer
         public:
           type: boolean
-        sampleInput: 
+        sampleInput:
           type: string
         expectedOutput:
           type: string
     Request Solution:
       type: object
-      required: 
+      required:
         - solver
         - problem
         - code
@@ -948,7 +1008,7 @@ components:
           type: integer
     Response Solution:
       type: object
-      required: 
+      required:
         - solutionId
         - solver
         - problem
@@ -973,7 +1033,7 @@ components:
           type: integer
     Request Comment:
       type: object
-      required: 
+      required:
         - commenter
         - problem
         - timestamp
@@ -987,11 +1047,11 @@ components:
           type: integer
         timestamp:
           type: string
-        comment: 
+        comment:
           type: string
     Response Comment:
       type: object
-      required: 
+      required:
         - commentId
         - commenter
         - problem
@@ -1006,7 +1066,7 @@ components:
           type: integer
         timestamp:
           type: string
-        comment: 
+        comment:
           type: string
     Error:
       type: object
