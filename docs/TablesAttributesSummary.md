@@ -21,7 +21,7 @@ IsAdmin | Boolean | true/false | required | store
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Problem | ProblemID | Poster | N/A
+Problem | ProblemID | Poster references User | N/A
 
 <br>
 
@@ -38,7 +38,7 @@ Description | text | N/A | Required | Store
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Parameter | Problem, Name | Problem | N/A
+Parameter | Problem, Name | Problem references Problem | N/A
 
 <br>
 
@@ -53,7 +53,7 @@ Name | char(32) | N/A | required | store
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Test Case | TCID, Problem | Problem | N/A
+Test Case | TCID, Problem | Problem references Problem | N/A
 
 <br>
 
@@ -71,14 +71,16 @@ ExpectedOutput | text | N/A | Required | Store
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Solution | Solver, Problem | Solver, Problem | N/A
+Solution | SolutionId | Solver references User, Problem references Problem | N/A
 
 <br>
 
 Name | Type | Range | Req / Opt | Derive / Store
 --- | --- | --- | --- | ---
+SolutionId | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
 Solver | char(32) | N/A | Required | Store
 Problem | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
+Code | text | N/A | Required | Store
 PassedTests | Integer | 3 -  10 | Required | Store
 CompTime | interval[minute to second][4] | 0 Seconds - 5? minutes | Required | Store
 
@@ -100,7 +102,7 @@ TotalTests | smallint(16-bit) | 3 - 10 | Required | Derive
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Comment  | Commenter, Problem, Timestamp | Commenter, Problem | N/A
+Comment  | Commenter, Problem, Timestamp | Commenter references User, Problem references Problem | N/A
 
 <br>
 
