@@ -143,11 +143,11 @@ paths:
           description: "Username of the user"
           required: true
           schema:
-          type: string
+            type: string
         - $ref: "#/components/parameters/Auth Token"
       responses:
         "200":
-          description: "User deleted"
+          description: "User Deleted"
   /user/search:
     get:
       summary: "Search for a user."
@@ -318,6 +318,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response Problem"
+    delete:
+      summary: "Delete an existing problem by ID"
+      operationId: deleteProblem
+      tags: 
+        - Problem
+      parameters:
+        - name: problemId 
+          in: path
+          description: "ID of problem"
+          required: true
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/Auth Token"
+      responses:
+        "200":
+          description: "Problem Deleted"
   /problem/search:
     get:
       summary: "Search for a Problem."
@@ -486,6 +502,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Parameter"
+    delete:
+      summary: "Delete an existing parameter"
+      operationId: deleteParameter
+      tags: 
+        - Parameter
+      parameters:
+        - name: problem
+          in: path
+          description: "ID of parameter's problem"
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: path
+          description: "name of the parameter"
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Auth Token"
+      responses:
+        "200":
+          description: "Parameter Deleted"
   /parameter/search:
     get:
       summary: "Search for a parameter"
@@ -641,6 +679,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response Test Case"
+    delete:
+      summary: "Delete an existing test case"
+      operationId: deleteTestCase
+      tags: 
+        - Test Case
+      parameters:
+        - name: tcid
+          in: path
+          description: "ID of test case"
+          required: true
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/Auth Token"
+      responses:
+        "200":
+          description: "Test Case Deleted"
   /testcase/search:
     get:
       summary: "Search for a test case."
@@ -810,6 +864,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response Solution"
+    delete:
+      summary: "Delete an existing solution"
+      operationId: deleteSolution
+      tags: 
+        - Solution
+      parameters:
+        - name: solutionId
+          in: path
+          description: "ID of solution"
+          required: true
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/Auth Token"
+      responses:
+        "200":
+          description: "Solution Deleted"
   /solution/search:
     get:
       summary: "Search for a solution."
@@ -974,6 +1044,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response Comment"
+    delete:
+      summary: "Delete an existing comment"
+      operationId: deleteComment
+      tags: 
+        - Comment
+      parameters:
+        - name: commentId
+          in: path
+          description: "ID of comment"
+          required: true
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/Auth Token"
+      responses:
+        "200":
+          description: "Comment Deleted"
   /comment/search:
     get:
       summary: "Search for a Comment."
