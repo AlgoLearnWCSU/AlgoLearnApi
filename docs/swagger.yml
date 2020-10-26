@@ -172,7 +172,7 @@ paths:
           description: "The name of the user"
           required: false
           schema:
-            type: string 
+            type: string
         - name: email
           in: query
           description: "The email of the user"
@@ -371,7 +371,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: "#/components/schemas/Parameter"
     post:
       summary: "Create a new parameter"
@@ -416,7 +416,7 @@ paths:
       responses:
         "200":
           description: "Get a parameter by problem and name"
-          content: 
+          content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Parameter"
@@ -1076,6 +1076,46 @@ paths:
       responses:
         "200":
           description: "User logged out"
+  /auth/refresh:
+    post:
+      summary: "Refresh a user's access token"
+      operationId: refreshAccessToken
+      tags:
+        - Authorization
+      requestBody:
+        description: "The refresh token"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refresh_token
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        "200":
+          description: "User signed in"
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                  - expire_time
+                  - refresh_token
+                  - refresh_expire_time
+                properties:
+                  access_token:
+                    type: string
+                  expire_time:
+                    type: integer
+                  refresh_token:
+                    type: string
+                  refresh_expire_time:
+                    type: integer
 components:
   parameters:
     Auth Token:
