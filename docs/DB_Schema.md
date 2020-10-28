@@ -47,6 +47,7 @@ Description*
     Code*,
     PassedTests*,
     CompTime*
+    TotalTests*
 )
 
 - Solver References User
