@@ -32,16 +32,18 @@ Description*
 
 **Test Case**(
     <ins>TCID</ins>,
-    <ins>Problem</ins>,
+    Problem*,
     IsPublic*,
     SampleInput*,
     ExpectedOutput*
 )
 
+- Problem References Problem
+
 **Solution**(
-    <ins>Solver</ins>,
-    <ins>Problem</ins>,
-    SolutionID*,
+    <ins>SolutionID*</ins>,
+    Solver*,
+    Problem*,
     Code*,
     PassedTests*,
     CompTime*
@@ -51,9 +53,10 @@ Description*
 - Problem References Problem
 
 **Comment**(
-    <ins>Commenter</ins>,
-    <ins>Problem</ins>,
-    <ins>Timestamp</ins>,
+    <ins>CommentID</ins>
+    Commenter*,
+    Problem*,
+    Timestamp*,
     Comment*
 )
 
