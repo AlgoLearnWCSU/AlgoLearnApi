@@ -341,6 +341,12 @@ paths:
       tags:
         - Problem
       parameters:
+        - name: problemId
+          in: query
+          description: "Part or all of id of the problem"
+          required: false
+          schema:
+            type: integer
         - name: poster
           in: query
           description: "Part or all of the username of the poster"
@@ -419,7 +425,7 @@ paths:
       parameters:
         - name: problem
           in: path
-          description: "ID of the problem this parameter is meant to be passed into"
+          description: "ID of the problem the parameter is meant to be passed into"
           required: true
           schema:
             type: integer
@@ -533,7 +539,7 @@ paths:
       parameters:
         - name: problem
           in: query
-          description: "Part or all of the ID of this parameter's problem"
+          description: "Part or all of the ID of the parameter's problem"
           required: false
           schema:
             type: integer
@@ -711,9 +717,15 @@ paths:
       tags:
         - Test Case
       parameters:
+        - name: tcid
+          in: query
+          description: "Part or all of the ID of the test case"
+          required: false
+          schema:
+            type: integer
         - name: problem
           in: query
-          description: "Part or all of the ID of this test case's problem"
+          description: "Part or all of the ID of the test case's problem"
           required: false
           schema:
             type: integer
@@ -731,13 +743,13 @@ paths:
             type: boolean
         - name: sampleInput
           in: query
-          description: "The data to be input to the solution by this test case"
+          description: "The data to be input to the solution by the test case"
           required: false
           schema:
             type: string
         - name: expectedOutput
           in: query
-          description: "The output that the solution should provide"
+          description: "The output that a solution should provide for the test case"
           required: false
           schema:
             type: string
@@ -896,6 +908,12 @@ paths:
       tags:
         - Solution
       parameters:
+        - name: solutionId
+          in: query
+          description: "Part or all of the ID of the solution"
+          required: false
+          schema:
+            type: integer
         - name: solver
           in: query
           description: "Part or all of the username of the user who submitted this solution"
@@ -904,7 +922,7 @@ paths:
             type: string
         - name: problem
           in: query
-          description: "Part or all of the ID of this solution's problem"
+          description: "Part or all of the ID of the solution's problem"
           required: false
           schema:
             type: integer
@@ -1100,9 +1118,9 @@ paths:
           required: false
           schema:
             type: string
-        - name: timestamp
+        - name: comment
           in: query
-          description: "Part or all of the bodycomment was posted"
+          description: "Part or all of the body of the comment"
           required: false
           schema:
             type: string
