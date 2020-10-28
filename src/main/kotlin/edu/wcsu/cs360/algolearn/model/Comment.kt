@@ -23,7 +23,7 @@ class Comment {
 
     @Column(nullable = false)
     @Lob
-    val comment: String? = null
+    var comment: String? = null
 
 }
 

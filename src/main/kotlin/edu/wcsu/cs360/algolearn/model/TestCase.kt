@@ -23,7 +23,7 @@ class TestCase {
 
     @Column(nullable = false)
     @Lob
-    val sampleOutput: String? = null
+    var sampleOutput: String? = null
 
 }
 
