@@ -15,7 +15,6 @@ class ProblemController {
 
     @GetMapping
     fun getDemProblems(): List<Problem?> {
-        println("test")
         return problemRepository!!.findAll().toList()
     }
 
