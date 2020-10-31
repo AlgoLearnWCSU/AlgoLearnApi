@@ -19,7 +19,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20User"
+                  $ref: "#/components/schemas/Response_User"
     post:
       summary: "Create a new user."
       operationId: createUser
@@ -32,21 +32,21 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "User object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20User"
+              $ref: "#/components/schemas/Request_User"
       responses:
         "200":
           description: "User Created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20User"
+                $ref: "#/components/schemas/Response_User"
   /user/{username}:
     get:
       summary: "Get a User by username."
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20User"
+                $ref: "#/components/schemas/Response_User"
     patch:
       summary: "Modify an existing user by username."
       operationId: modifyUser
@@ -81,7 +81,7 @@ paths:
           schema:
             type: string
             format: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "User object to create"
         required: true
@@ -104,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20User"
+                $ref: "#/components/schemas/Response_User"
     put:
       summary: "Replace an existing user by username."
       operationId: replaceUser
@@ -117,34 +117,34 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "User object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20User"
+              $ref: "#/components/schemas/Request_User"
       responses:
         "200":
           description: "User Replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20User"
+                $ref: "#/components/schemas/Response_User"
     delete:
       summary: "Delete an existing user by username"
       operationId: deleteUser
-      tags: 
+      tags:
         - User
       parameters:
-        - name: username 
+        - name: username
           in: path
           description: "Username of the user"
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "User Deleted"
@@ -193,7 +193,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20User"
+                  $ref: "#/components/schemas/Response_User"
   /problem:
     get:
       summary: "Get all problems"
@@ -208,7 +208,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Problem"
+                  $ref: "#/components/schemas/Response_Problem"
     post:
       summary: "Create a new problem."
       operationId: createProblem
@@ -227,14 +227,14 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "Problem Created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Problem"
+                $ref: "#/components/schemas/Response_Problem"
   /problem/{problemId}:
     get:
       summary: "Get a problem by ID."
@@ -254,7 +254,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Problem"
+                $ref: "#/components/schemas/Response_Problem"
     patch:
       summary: "Modify an existing problem by ID."
       operationId: modifyProblem
@@ -267,7 +267,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Problem object to create"
         required: true
@@ -290,7 +290,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Problem"
+                $ref: "#/components/schemas/Response_Problem"
     put:
       summary: "Replace an existing problem by ID."
       operationId: replaceProblem
@@ -303,34 +303,34 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Problem object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Problem"
+              $ref: "#/components/schemas/Request_Problem"
       responses:
         "200":
           description: "Problem Replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Problem"
+                $ref: "#/components/schemas/Response_Problem"
     delete:
       summary: "Delete an existing problem by ID"
       operationId: deleteProblem
-      tags: 
+      tags:
         - Problem
       parameters:
-        - name: problemId 
+        - name: problemId
           in: path
           description: "ID of problem"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "Problem Deleted"
@@ -379,7 +379,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Problem"
+                  $ref: "#/components/schemas/Response_Problem"
   /parameter:
     get:
       summary: "Get all pararmeters"
@@ -401,7 +401,7 @@ paths:
       tags:
         - Parameter
       parameters:
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Parameter object to create"
         required: true
@@ -460,7 +460,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Parameter object to create"
         required: true
@@ -493,7 +493,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Parameter object to replace existing one with"
         required: true
@@ -511,7 +511,7 @@ paths:
     delete:
       summary: "Delete an existing parameter"
       operationId: deleteParameter
-      tags: 
+      tags:
         - Parameter
       parameters:
         - name: problem
@@ -526,7 +526,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "Parameter Deleted"
@@ -578,28 +578,28 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Test%20Case"
+                  $ref: "#/components/schemas/Response_Test_Case"
     post:
       summary: "Create a new test case."
       operationId: createTestCase
       tags:
         - Test Case
       parameters:
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Test case object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Test%20Case"
+              $ref: "#/components/schemas/Request_Test_Case"
       responses:
         "200":
           description: "Test case created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Test%20Case"
+                $ref: "#/components/schemas/Response_Test_Case"
   /testcase/{tcid}:
     get:
       summary: "Get a test case by ID"
@@ -619,7 +619,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Response%20Test%20Case"
+              $ref: "#/components/schemas/Response_Test_Case"
       responses:
         "200":
           description: "A list of all test cases"
@@ -628,7 +628,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Test%20Case"
+                  $ref: "#/components/schemas/Response_Test_Case"
     patch:
       summary: "Modify an existing test case by ID."
       operationId: modifyTestCase
@@ -641,7 +641,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Test case object to create"
         required: true
@@ -666,7 +666,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Test%20Case"
+                $ref: "#/components/schemas/Response_Test_Case"
     put:
       summary: "Replace an existing test case by ID."
       operationId: replaceTestCase
@@ -679,25 +679,25 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Test case object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Test%20Case"
+              $ref: "#/components/schemas/Request_Test_Case"
       responses:
         "200":
           description: "Test case replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Test%20Case"
+                $ref: "#/components/schemas/Response_Test_Case"
     delete:
       summary: "Delete an existing test case"
       operationId: deleteTestCase
-      tags: 
+      tags:
         - Test Case
       parameters:
         - name: tcid
@@ -706,7 +706,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "Test Case Deleted"
@@ -761,7 +761,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Test%20Case"
+                  $ref: "#/components/schemas/Response_Test_Case"
   /solution:
     get:
       summary: "Get all solutions"
@@ -776,28 +776,28 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Solution"
+                  $ref: "#/components/schemas/Response_Solution"
     post:
       summary: "Create a new solution."
       operationId: createSolution
       tags:
         - Solution
       parameters:
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Solution object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Solution"
+              $ref: "#/components/schemas/Request_Solution"
       responses:
         "200":
           description: "Solution created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Solution"
+                $ref: "#/components/schemas/Response_Solution"
   /solution/{solutionId}:
     get:
       summary: "Get a solution by ID."
@@ -817,7 +817,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Solution"
+                $ref: "#/components/schemas/Response_Solution"
     patch:
       summary: "Modify an existing solution by ID."
       operationId: modifySolution
@@ -830,7 +830,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Solution object to create"
         required: true
@@ -857,7 +857,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Solution"
+                $ref: "#/components/schemas/Response_Solution"
     put:
       summary: "Replace an existing solution by ID."
       operationId: replaceSolution
@@ -870,25 +870,25 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Solution object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Solution"
+              $ref: "#/components/schemas/Request_Solution"
       responses:
         "200":
           description: "Solution Replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Solution"
+                $ref: "#/components/schemas/Response_Solution"
     delete:
       summary: "Delete an existing solution"
       operationId: deleteSolution
-      tags: 
+      tags:
         - Solution
       parameters:
         - name: solutionId
@@ -897,7 +897,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "Solution Deleted"
@@ -958,7 +958,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Solution"
+                  $ref: "#/components/schemas/Response_Solution"
   /comment:
     get:
       summary: "Get all Comments"
@@ -973,7 +973,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Comment"
+                  $ref: "#/components/schemas/Response_Comment"
     post:
       summary: "Create Comment"
       operationId: createComment
@@ -986,21 +986,21 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Comment object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Comment"
+              $ref: "#/components/schemas/Request_Comment"
       responses:
         "200":
           description: "Comment Created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Comment"
+                $ref: "#/components/schemas/Response_Comment"
   /comment/{commentId}:
     get:
       summary: "Get Comment by Id"
@@ -1013,7 +1013,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Comment"
+                $ref: "#/components/schemas/Response_Comment"
     patch:
       summary: "Modify an existing Comment by ID."
       operationId: modifyComment
@@ -1026,7 +1026,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Modified Comment"
         required: true
@@ -1043,7 +1043,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Comment"
+                $ref: "#/components/schemas/Response_Comment"
     put:
       summary: "Replace an existing Comment by ID."
       operationId: replaceComment
@@ -1056,25 +1056,25 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       requestBody:
         description: "Replacing Comment object"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request%20Comment"
+              $ref: "#/components/schemas/Request_Comment"
       responses:
         "200":
           description: "Comment Replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response%20Comment"
+                $ref: "#/components/schemas/Response_Comment"
     delete:
       summary: "Delete an existing comment"
       operationId: deleteComment
-      tags: 
+      tags:
         - Comment
       parameters:
         - name: commentId
@@ -1083,7 +1083,7 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "Comment Deleted"
@@ -1138,7 +1138,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response%20Comment"
+                  $ref: "#/components/schemas/Response_Comment"
   /auth:
     post:
       summary: "Sign in a user"
@@ -1184,7 +1184,7 @@ paths:
       tags:
         - Authorization
       parameters:
-        - $ref: "#/components/parameters/Auth%20Token"
+        - $ref: "#/components/parameters/Auth_Token"
       responses:
         "200":
           description: "User logged out"
@@ -1229,7 +1229,7 @@ paths:
                     type: integer
 components:
   parameters:
-    Auth%20Token:
+    Auth_Token:
       name: Authorization
       in: header
       description: "Authorization token"
@@ -1237,7 +1237,7 @@ components:
       schema:
         type: string
   schemas:
-    Request User:
+    Request_User:
       type: object
       required:
         - username
@@ -1252,7 +1252,7 @@ components:
           type: string
         admin:
           type: boolean
-    Response User:
+    Response_User:
       type: object
       required:
         - username
@@ -1268,7 +1268,7 @@ components:
           type: string
         admin:
           type: boolean
-    Request Problem:
+    Request_Problem:
       type: object
       required:
         - poster
@@ -1278,7 +1278,7 @@ components:
           type: string
         description:
           type: string
-    Response Problem:
+    Response_Problem:
       type: object
       required:
         - problemId
@@ -1304,7 +1304,7 @@ components:
           type: integer
         name:
           type: string
-    Request Test Case:
+    Request_Test_Case:
       type: object
       required:
         - problem
@@ -1322,7 +1322,7 @@ components:
           type: string
         expectedOutput:
           type: string
-    Response Test Case:
+    Response_Test_Case:
       type: object
       required:
         - tcid
@@ -1341,7 +1341,7 @@ components:
           type: string
         expectedOutput:
           type: string
-    Request %20Solution:
+    Request_Solution:
       type: object
       required:
         - solver
@@ -1362,7 +1362,7 @@ components:
           type: string
         totalTests:
           type: integer
-    Response%20Solution:
+    Response_Solution:
       type: object
       required:
         - solutionId
@@ -1387,7 +1387,7 @@ components:
           type: double
         totalTests:
           type: integer
-    Request%20Comment:
+    Request_Comment:
       type: object
       required:
         - commenter
@@ -1405,7 +1405,7 @@ components:
           type: string
         comment:
           type: string
-    Response %20Comment:
+    Response_Comment:
       type: object
       required:
         - commentId
