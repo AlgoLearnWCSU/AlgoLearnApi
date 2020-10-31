@@ -13,6 +13,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
@@ -67,4 +68,9 @@ class ServerConfig {
             connector.redirectPort = 8443
             return connector
         }
+
+    @Bean
+    fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
 }

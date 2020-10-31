@@ -17,6 +17,20 @@ class User {
 
     @Column(nullable = false)
     var isAdmin: Boolean? = null
+
+    @Column
+    var avatar_url: String? = null
+
+    constructor()
+
+    constructor(username: String?, name: String?, email: String?,
+                isAdmin: Boolean?, avatar_url: String?) {
+        this.username = username
+        this.name = name
+        this.email = email
+        this.isAdmin = isAdmin
+        this.avatar_url = avatar_url
+    }
 }
 
 interface UserRepository : CrudRepository<User?, String?>
