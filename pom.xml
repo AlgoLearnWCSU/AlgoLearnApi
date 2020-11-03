@@ -168,7 +168,7 @@
                             <resource>
                                 <directory>${project.basedir}/target</directory>
                                 <includes>
-                                    <include>*.jar</include>
+                                    <include>*.war</include>
                                 </includes>
                             </resource>
                         </resources>
