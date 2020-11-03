@@ -29,4 +29,4 @@ jobs:
         app-name: 'algolearn-backend'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_2d4e4a4bedf94064bd0b2b80f9bcb5aa }}
-        package: '${{ github.workspace }}/target/*.war'
+        package: '${{ github.workspace }}/target/*.jar'
