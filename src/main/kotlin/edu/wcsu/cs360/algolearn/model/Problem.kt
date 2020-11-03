@@ -12,6 +12,9 @@ class Problem {
     var id: Int? = null
 
     @Column(nullable = false)
+    var name:String? = null
+
+    @Column(nullable = false)
     @Lob
     var description: String? = null
 
@@ -20,7 +23,6 @@ class Problem {
 
     @Column(nullable = false)
     val poster: String? = null
-
 }
 
 interface ProblemRepository : CrudRepository<Problem?, Int?>
