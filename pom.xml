@@ -154,9 +154,9 @@
                 <version>1.8.0</version>
                 <configuration>
                     <schemaVersion>V2</schemaVersion>
-                    <resourceGroup>spring-petclinic</resourceGroup>
-                    <appName>jdubois-petclinic</appName>
-                    <region>westeurope</region>
+                    <resourceGroup>algolearn</resourceGroup>
+                    <appName>algolearn-backend</appName>
+                    <region>eastus</region>
                     <pricingTier>B1</pricingTier>
                     <runtime>
                         <os>linux</os>
