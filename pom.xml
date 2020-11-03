@@ -148,6 +148,33 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-webapp-maven-plugin</artifactId>
+                <version>1.8.0</version>
+                <configuration>
+                    <schemaVersion>V2</schemaVersion>
+                    <resourceGroup>spring-petclinic</resourceGroup>
+                    <appName>jdubois-petclinic</appName>
+                    <region>westeurope</region>
+                    <pricingTier>B1</pricingTier>
+                    <runtime>
+                        <os>linux</os>
+                        <javaVersion>java11</javaVersion>
+                        <webContainer>java11</webContainer>
+                    </runtime>
+                    <deployment>
+                        <resources>
+                            <resource>
+                                <directory>${project.basedir}/target</directory>
+                                <includes>
+                                    <include>*.jar</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                    </deployment>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
