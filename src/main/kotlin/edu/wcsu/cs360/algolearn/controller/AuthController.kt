@@ -97,9 +97,19 @@ class AuthController {
 
     @GetMapping(path = ["/login/{env}"])
     fun login(@RequestParam code: String, @PathVariable env: String): Any {
+        var clientId: String
+        var clientSecret: String
         val url = when(env) {
-            "local" -> "http://localhost:4200/#/home"
-            "dev" -> "https://agreeable-mud-0fd849a0f.azurestaticapps.net/#/home"
+            "local" -> {
+                clientId = "Iv1.2c3f97ee17f544a1"
+                clientSecret = "4106b49d691b7b0cdee692efad30d8d74e633d89"
+                "http://localhost:4200/#/home"
+            }
+            "dev" -> {
+                clientId = "Iv1.500c711bc765c8f5"
+                clientSecret = "5628f2b869e9469a7b415dda4f23ee5312144a36"
+                "https://agreeable-mud-0fd849a0f.azurestaticapps.net/#/home"
+            }
             else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
         }
 
@@ -111,9 +121,7 @@ class AuthController {
         // Get Auth Token
         val res: GitHubAuthResponse = restTemplate?.postForEntity(
                 "https://github.com/login/oauth/access_token",
-                GitHubAuthRequest(code,
-                        "Iv1.2c3f97ee17f544a1",
-                        "4106b49d691b7b0cdee692efad30d8d74e633d89"),
+                GitHubAuthRequest(code, clientId, clientSecret),
                 GitHubAuthResponse::class.java)?.body
                 ?: return RedirectView("$url?login_failed=true")
 
@@ -150,6 +158,6 @@ class AuthController {
 
         println(test?.id)
 
-        return RedirectView("$url?jwt=$jwt")
+        return RedirectView("$url?jwt=$jwt&username=${user.login}")
     }
 }
