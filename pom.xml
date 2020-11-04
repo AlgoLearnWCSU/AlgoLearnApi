@@ -154,14 +154,14 @@
                 <version>1.8.0</version>
                 <configuration>
                     <schemaVersion>V2</schemaVersion>
-                    <resourceGroup>algolearn</resourceGroup>
-                    <appName>algolearn-backend</appName>
-                    <region>eastus</region>
-                    <pricingTier>B1</pricingTier>
+                    <resourceGroup>AlgoLearn</resourceGroup>
+                    <appName>AlgoLearn-Backend</appName>
+                    <region>East US</region>
+                    <pricingTier>F1</pricingTier>
                     <runtime>
                         <os>linux</os>
                         <javaVersion>java11</javaVersion>
-                        <webContainer>java11</webContainer>
+                        <webContainer>tomcat 8.5</webContainer>
                     </runtime>
                     <deployment>
                         <resources>
