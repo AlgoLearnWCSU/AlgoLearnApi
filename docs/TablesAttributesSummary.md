@@ -28,6 +28,7 @@ Problem | ProblemID | Poster references User | N/A
 Name | Type | Range | Req / Opt | Derive / Store
 --- | --- | --- | --- | ---
 ProblemID | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
+Name | char(32) | N/A | Required | Store
 Poster | char(32) | N/A | Required | Store
 IsReviewed | bool | true / false | Required | Store
 Description | text | N/A | Required | Store

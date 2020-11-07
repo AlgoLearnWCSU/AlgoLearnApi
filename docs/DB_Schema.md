@@ -16,6 +16,7 @@ isAdmin*
 
 **Problem**(
 <ins>ProblemID</ins>,
+Name*,
 Poster*,
 IsReviewed*,
 Description*
