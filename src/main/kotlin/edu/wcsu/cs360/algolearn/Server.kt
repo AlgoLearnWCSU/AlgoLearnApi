@@ -63,9 +63,9 @@ class ServerConfig {
         private get() {
             val connector = Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL)
             connector.scheme = "http"
-            connector.port = 80
+            connector.port = 8080
             connector.secure = false
-            connector.redirectPort = 443
+            connector.redirectPort = 8443
             return connector
         }
 
