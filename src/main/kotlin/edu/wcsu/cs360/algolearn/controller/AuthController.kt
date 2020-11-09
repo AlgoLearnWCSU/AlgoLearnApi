@@ -34,7 +34,7 @@ class GitHubEmailResponse(val email: String?,
 
 class GitHubUserResponse(val login: String?,
                           val avatar_url: String?,
-                          val name: String?)
+                          var name: String?)
 
 private const val SECRET_KEY = """oeRaYY7Wo24sDqKSX3IM9ASGmdGPmkTd9jo1QTy4b7P9Ze5_9hKolVX8xNrQDcNRfVEdTZNOuOyqEGhXEbdJI-ZQ19k_o9MI0y3eZN2lp9jow55FfXMiINEdt1XR85VipRLSOkT6kSpzs2x-jbLDiz9iFVzkd81YKxMgPA7VfZeQUm4n-mOmnWMaVX30zGFU4L3oPBctYKkl4dYfqYWqRNfrgPJVi5DGFjywgxx0ASEiJHtV72paI3fDR2XwlSkyhhmY-ICjCRmsJN4fX1pdoL8a18-aQrvyu4j0Os6dVPYIoPvvY0SAZtWYKHfM15g7A3HD4cVREf9cUsprCRK93w"""
 
@@ -143,6 +143,10 @@ class AuthController {
         // Get username, name, and avatar url
         val user = restTemplate!!.exchange("https://api.github.com/user", HttpMethod.GET, entity, GitHubUserResponse::class.java).body
                 ?: return RedirectView("$url?login_failed=true")
+
+        if(user.name == null) {
+            user.name = user.login
+        }
 
         if (userRepository!!.findById(user.login!!).isEmpty) {
             userRepository.save(User(user.login, user.name, email, false, user.avatar_url))
