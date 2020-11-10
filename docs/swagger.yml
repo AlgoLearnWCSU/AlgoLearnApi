@@ -394,7 +394,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Parameter"
+                  $ref: "#/components/schemas/Response_Parameter"
     post:
       summary: "Create a new parameter"
       operationId: createParameter
@@ -408,14 +408,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Parameter"
+              $ref: "#/components/schemas/Request_Parameter"
       responses:
         "200":
           description: "Parameter created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Parameter"
+                $ref: "#/components/schemas/Response_Parameter"
   /parameter/{problem}/{name}:
     get:
       summary: "Get a parameter by its problem and name"
@@ -441,7 +441,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Parameter"
+                $ref: "#/components/schemas/Response_Parameter"
     patch:
       summary: "Modify an existing parameter by its problem and name."
       operationId: modifyParameter
@@ -467,14 +467,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Parameter"
+              $ref: "#/components/schemas/Request_Parameter"
       responses:
         "200":
           description: "Parameter modified"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Parameter"
+                $ref: "#/components/schemas/Response_Parameter"
     put:
       summary: "Replace an existing parameter with a new one"
       operationId: replaceParameter
@@ -500,14 +500,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Parameter"
+              $ref: "#/components/schemas/Request_Parameter"
       responses:
         "200":
           description: "Parameter replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Parameter"
+                $ref: "#/components/schemas/Response_Parameter"
     delete:
       summary: "Delete an existing parameter"
       operationId: deleteParameter
@@ -563,7 +563,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Parameter"
+                  $ref: "#/components/schemas/Response_Parameter"
   /testcase:
     get:
       summary: "Get all test cases"
@@ -1294,9 +1294,20 @@ components:
           type: boolean
         description:
           type: string
-    Parameter:
+    Request Parameter:
       type: object
       required:
+        - problem
+        - name
+      properties:
+        problem:
+          type: integer
+        name:
+          type: string
+    Response Parameter:
+      type: object
+      required:
+        -paramId
         - problem
         - name
       properties:
