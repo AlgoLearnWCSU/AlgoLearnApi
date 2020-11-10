@@ -39,14 +39,15 @@ Description | text | N/A | Required | Store
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Parameter | Problem, Name | Problem references Problem | N/A
+Parameter | ParamID | Problem references Problem | N/A
 
 <br>
 
 Name | Type | Range | Req / Opt | Derive / Store
 --- | --- | --- | --- | ---
+ParamId | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
 Problem | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
-Name | char(32) | N/A | required | store
+Name | char(32) | N/A | Required | Store
 
 <br>
 

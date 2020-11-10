@@ -25,8 +25,9 @@ Description*
 - Poster references User
 
 **Parameter**(
-    <ins>Problem</ins>,
-    <ins>Name</ins>
+    <ins>ParameterID</ins>,
+    Problem*,
+    Name*
 )
 
 - Problem References Problem
