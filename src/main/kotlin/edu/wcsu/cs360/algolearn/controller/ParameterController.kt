@@ -1,12 +1,16 @@
 package edu.wcsu.cs360.algolearn.controller
 
 import edu.wcsu.cs360.algolearn.model.Parameter
-import edu.wcsu.cs360.algolearn.model.ParameterId
 import edu.wcsu.cs360.algolearn.model.ParameterRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.text.MessageFormat
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains
+
 
 @RestController
 @RequestMapping(path = ["/parameter"])
@@ -16,13 +20,13 @@ class ParameterController {
 
     @GetMapping
     fun getDemParameters(): List<Parameter?> {
-        println("test")
+        println("getting all params")
         return parameterRepository!!.findAll().toList()
     }
 
-    @GetMapping(path = ["/{problem}/{name}"])
-    fun getDemParametersById(@PathVariable problem: Int?, @PathVariable name: String?): Any {
-        val data = parameterRepository!!.findById(ParameterId(problem!!, name!!))
+    @GetMapping(path = ["/{paramId}"])
+    fun getDemParametersById(@PathVariable paramId: Int): Any {
+        val data = parameterRepository!!.findById(paramId)
         if (data.isEmpty)
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
         return data.get()
@@ -30,31 +34,29 @@ class ParameterController {
 
     @PostMapping // Map ONLY POST Requests
     fun addNewParameter(@RequestBody parameter: Parameter): Any {
-        if (parameter.problem!! != null && parameter.name!! != null &&
-                parameterRepository!!.findById(ParameterId(parameter.problem!!, parameter.name!!)).isPresent)
+        println("Creating Param: $parameter")
+        if (parameter.paramId != null && parameterRepository!!.findById(parameter.paramId!!).isPresent)
             return ResponseEntity<Any>(HttpStatus.CONFLICT)
         parameterRepository?.save(parameter)
         return parameter
     }
 
-    @PutMapping(path = ["/{problem}/{name}"])
-    fun replaceParameter(@PathVariable problem: Int?, @PathVariable name: String?, @RequestBody parameter: Parameter): Any {
-        if (parameterRepository!!.findById(ParameterId(problem!!, name!!)).isEmpty)
+    @PutMapping(path = ["/{paramId}"])
+    fun replaceParameter(@PathVariable paramId: Int, @RequestBody parameter: Parameter): Any {
+        if (parameterRepository!!.findById(paramId).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
         parameterRepository.save(parameter)
         return parameter
     }
 
-    @PatchMapping(path = ["/{problem}/{name}"])
-    fun modifyParameter(@PathVariable problem: Int?, @PathVariable name: String?, @RequestBody parameter: Parameter): Any {
-        val oldParameter = parameterRepository!!.findById(ParameterId(problem!!, name!!))
+    @PatchMapping(path = ["/{paramId}"])
+    fun modifyParameter(@PathVariable paramId: Int, @RequestBody parameter: Parameter): Any {
+        val oldParameter = parameterRepository!!.findById(paramId)
         if (oldParameter.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        if(problem != parameter.problem || name != parameter.name)
-            parameterRepository.deleteById(ParameterId(problem!!, name!!))
-        else
-            return parameter
+        if(paramId != parameter.problem)
+            parameterRepository.deleteById(paramId)
 
         if(parameter.problem == null)
             parameter.problem = oldParameter.get().problem
@@ -66,11 +68,20 @@ class ParameterController {
         return parameter
     }
 
-    @DeleteMapping(path = ["/{problem}/{name}"])
-    fun deleteParameterById(@PathVariable problem: Int?, @PathVariable name: String?): ResponseEntity<Any> {
-        if (parameterRepository!!.findById(ParameterId(problem!!, name!!)).isEmpty)
+    @DeleteMapping(path = ["/{paramId}"])
+    fun deleteParameterById(@PathVariable paramId: Int): ResponseEntity<Any> {
+        if (parameterRepository!!.findById(paramId).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
-        parameterRepository.deleteById(ParameterId(problem!!, name!!))
+        parameterRepository.deleteById(paramId)
         return ResponseEntity(HttpStatus.OK)
+    }
+
+    @GetMapping(path = ["/search"])
+    fun searchParam(@RequestParam problemId: Int?, @RequestParam paramName: String?): Any {
+        var matcher: ExampleMatcher = ExampleMatcher
+                .matchingAll()
+                .withMatcher("parameter", contains().ignoreCase())
+
+        return parameterRepository!!.findAll(Example.of(Parameter(null, problemId, paramName), matcher))
     }
 }
