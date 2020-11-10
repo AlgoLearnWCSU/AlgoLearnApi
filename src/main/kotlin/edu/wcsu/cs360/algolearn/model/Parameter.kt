@@ -1,34 +1,29 @@
 package edu.wcsu.cs360.algolearn.model
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import java.io.Serializable
 import javax.persistence.*
 
-class ParameterId(private val problem: Int, private val name: String) : Serializable {
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
-            is ParameterId -> (other.name.compareTo(name) == 0 && other.problem == problem)
-            else -> false
-        }
-    }
-
-    override fun hashCode(): Int {
-        return problem*name.length+72%66047
-    }
-
-}
-
 @Entity(name = "parameter") // This tells Hibernate to make a table out of this class
-@IdClass(ParameterId::class)// change table name to avoid keyword conflict
 class Parameter {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var paramId: Int? = null
+
     @Column(nullable = false)
     var problem: Int? = null
 
-    @Id
     @Column(nullable = false)
     var name: String? = null
+
+    constructor()
+
+    constructor(paramId: Int?, problem: Int?, name: String?) {
+        this.paramId = paramId
+        this.problem = problem
+        this.name = name
+    }
+
 }
 
-interface ParameterRepository : CrudRepository<Parameter?, ParameterId?>
+interface ParameterRepository : JpaRepository<Parameter?, Int?>
