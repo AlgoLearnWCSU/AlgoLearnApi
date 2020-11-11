@@ -8,7 +8,6 @@ import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.text.MessageFormat
 import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains
 
 
@@ -78,7 +77,7 @@ class ParameterController {
 
     @GetMapping(path = ["/search"])
     fun searchParam(@RequestParam problemId: Int?, @RequestParam paramName: String?): Any {
-        var matcher: ExampleMatcher = ExampleMatcher
+        val matcher: ExampleMatcher = ExampleMatcher
                 .matchingAll()
                 .withMatcher("parameter", contains().ignoreCase())
 

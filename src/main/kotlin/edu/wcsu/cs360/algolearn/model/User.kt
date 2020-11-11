@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository
 import javax.persistence.*
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name="user_t", schema="public") // change table name to avoid keyword conflict
+@Table(name="user_t") // change table name to avoid keyword conflict
 class User {
     @Id
     var username: String? = null

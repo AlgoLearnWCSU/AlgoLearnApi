@@ -5,7 +5,6 @@ import javax.persistence.*
 
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name = "test_case", schema = "public") // change table name to avoid keyword conflict
 class TestCase {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -15,7 +14,7 @@ class TestCase {
     var problem: Int? = null
 
     @Column(nullable = false)
-    var public: Boolean? = null
+    var isPublic: Boolean? = null
 
     @Column(nullable = false)
     @Lob

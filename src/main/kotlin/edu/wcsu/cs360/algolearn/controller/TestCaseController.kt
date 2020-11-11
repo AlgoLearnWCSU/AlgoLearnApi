@@ -57,8 +57,8 @@ class TestCaseController {
             testcase.id = tcid
         if(testcase.problem == null)
             testcase.problem = oldTestCase.get().problem
-        if(testcase.public == null)
-            testcase.public = oldTestCase.get().public
+        if(testcase.isPublic == null)
+            testcase.isPublic = oldTestCase.get().isPublic
         if(testcase.sampleInput == null)
             testcase.sampleInput = oldTestCase.get().sampleInput
         if(testcase.sampleOutput == null)

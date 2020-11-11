@@ -5,7 +5,6 @@ import javax.persistence.*
 
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name = "auth", schema = "public") // change table name to avoid keyword conflict
 class Auth {
     @Id
     @Column(nullable = false)

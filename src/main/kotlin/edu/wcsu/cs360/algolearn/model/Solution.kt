@@ -5,7 +5,6 @@ import javax.persistence.*
 
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name = "solution", schema = "public") // change table name to avoid keyword conflict
 class Solution {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
