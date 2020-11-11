@@ -14,6 +14,9 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
@@ -43,34 +46,43 @@ class ServerConfig {
         return bean
     }
 
-    @Bean
-    fun servletContainer(): ServletWebServerFactory {
-        val tomcat: TomcatServletWebServerFactory = object : TomcatServletWebServerFactory() {
-            override fun postProcessContext(context: Context) {
-                val securityConstraint = SecurityConstraint()
-                securityConstraint.userConstraint = "CONFIDENTIAL"
-                val collection = SecurityCollection()
-                collection.addPattern("/*")
-                securityConstraint.addCollection(collection)
-                context.addConstraint(securityConstraint)
-            }
-        }
-        tomcat.addAdditionalTomcatConnectors(httpConnector)
-        return tomcat
-    }
-
-    private val httpConnector: Connector
-        private get() {
-            val connector = Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL)
-            connector.scheme = "http"
-            connector.port = 8080
-            connector.secure = false
-            connector.redirectPort = 8443
-            return connector
-        }
+//    @Bean
+//    fun servletContainer(): ServletWebServerFactory {
+//        val tomcat: TomcatServletWebServerFactory = object : TomcatServletWebServerFactory() {
+//            override fun postProcessContext(context: Context) {
+//                val securityConstraint = SecurityConstraint()
+//                securityConstraint.userConstraint = "CONFIDENTIAL"
+//                val collection = SecurityCollection()
+//                collection.addPattern("/*")
+//                securityConstraint.addCollection(collection)
+//                context.addConstraint(securityConstraint)
+//            }
+//        }
+//        tomcat.addAdditionalTomcatConnectors(httpConnector)
+//        return tomcat
+//    }
+//
+//    private val httpConnector: Connector
+//        private get() {
+//            val connector = Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL)
+//            connector.scheme = "http"
+//            connector.port = 80
+//            connector.secure = false
+//            connector.redirectPort = 443
+//            return connector
+//        }
 
     @Bean
     fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+}
+
+@RestController
+@RequestMapping
+class HomeController {
+    @GetMapping
+    fun test(): String {
+        return "Hello world"
     }
 }
