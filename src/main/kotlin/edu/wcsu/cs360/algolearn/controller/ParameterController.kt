@@ -8,7 +8,7 @@ import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 
 
 @RestController
@@ -76,11 +76,17 @@ class ParameterController {
     }
 
     @GetMapping(path = ["/search"])
-    fun searchParam(@RequestParam problemId: Int?, @RequestParam paramName: String?): Any {
-        val matcher: ExampleMatcher = ExampleMatcher
+    fun searchParam(@RequestParam parameterId: Int?,
+                    @RequestParam problemId: Int?,
+                    @RequestParam parameterName: String?): Any {
+        var matcher: ExampleMatcher = ExampleMatcher
                 .matchingAll()
-                .withMatcher("parameter", contains().ignoreCase())
-
-        return parameterRepository!!.findAll(Example.of(Parameter(null, problemId, paramName), matcher))
+                .withMatcher("name", contains().ignoreCase())
+                .withMatcher("problem", exact())
+                .withMatcher("paramId", exact())
+        return parameterRepository!!.findAll(
+                Example.of(Parameter(parameterId,
+                        problemId,
+                        parameterName), matcher))
     }
 }
