@@ -26,3 +26,7 @@ ALTER TABLE solution
 ALTER TABLE solution
     ADD CONSTRAINT solution_solver_fk FOREIGN KEY (solver)
         REFERENCES user_t (username);
+
+ALTER TABLE auth
+    ADD CONSTRAINT auth_username_fk FOREIGN KEY (username)
+        REFERENCES user_t (username);
