@@ -76,10 +76,10 @@ class ParameterController {
     }
 
     @GetMapping(path = ["/search"])
-    fun searchParam(@RequestParam parameterId: Int?,
-                    @RequestParam problemId: Int?,
-                    @RequestParam parameterName: String?): Any {
-        var matcher: ExampleMatcher = ExampleMatcher
+    fun searchParam(@RequestParam paramId: Int?,
+                    @RequestParam problem: Int?,
+                    @RequestParam name: String?): Any {
+        val matcher: ExampleMatcher = ExampleMatcher
                 .matchingAll()
                 .withMatcher("name", contains().ignoreCase())
                 .withMatcher("problem", exact())
