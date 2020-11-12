@@ -85,8 +85,8 @@ class ParameterController {
                 .withMatcher("problem", exact())
                 .withMatcher("paramId", exact())
         return parameterRepository!!.findAll(
-                Example.of(Parameter(parameterId,
-                        problemId,
-                        parameterName), matcher))
+                Example.of(Parameter(paramId,
+                        problem,
+                        name), matcher))
     }
 }
