@@ -1,6 +1,6 @@
 package edu.wcsu.cs360.algolearn.model
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import javax.persistence.*
 
 
@@ -24,6 +24,16 @@ class Comment {
     @Lob
     var comment: String? = null
 
+    constructor() { }
+
+    constructor(id: Int?, commenter: String?, problem: Int?, timestamp: java.util.Date?, comment: String?) {
+        this.id = id
+        this.commenter = commenter
+        this.problem = problem
+        this.timestamp = timestamp
+        this.comment = comment
+    }
+
 }
 
-interface CommentRepository : CrudRepository<Comment?, Int?>
+interface CommentRepository : JpaRepository<Comment?, Int?>
