@@ -1,6 +1,7 @@
 package edu.wcsu.cs360.algolearn.model
 
-import org.springframework.data.repository.CrudRepository
+
+import org.springframework.data.jpa.repository.JpaRepository
 import javax.persistence.*
 
 
@@ -21,7 +22,17 @@ class Problem {
     var isReviewed: Boolean? = null
 
     @Column(nullable = false)
-    val poster: String? = null
+    var poster: String? = null
+
+    constructor() { }
+
+    constructor(id: Int?, name: String?, description: String?, isReviewed: Boolean?, poster: String?) {
+        this.id = id
+        this.name = name
+        this.description = description
+        this.isReviewed = isReviewed
+        this.poster = poster
+    }
 }
 
-interface ProblemRepository : CrudRepository<Problem?, Int?>
+interface ProblemRepository : JpaRepository<Problem?, Int?>

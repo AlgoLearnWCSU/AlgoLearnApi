@@ -3,9 +3,12 @@ package edu.wcsu.cs360.algolearn.controller
 import edu.wcsu.cs360.algolearn.model.Problem
 import edu.wcsu.cs360.algolearn.model.ProblemRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 
 @RestController
 @RequestMapping(path = ["/problem"])
@@ -70,5 +73,27 @@ class ProblemController {
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         problemRepository.deleteById(id)
         return ResponseEntity(HttpStatus.OK)
+    }
+
+    @GetMapping(path = ["/search"])
+    fun searchParam(@RequestParam id: Int?,
+                    @RequestParam name:String?,
+                    @RequestParam description: String?,
+                    @RequestParam isReviewed: Boolean?,
+                    @RequestParam poster: String?): Any {
+
+        val matcher: ExampleMatcher = ExampleMatcher
+                .matchingAll()
+                .withMatcher("id", exact())
+                .withMatcher("name", contains().ignoreCase())
+                .withMatcher("description", contains().ignoreCase())
+                .withMatcher("isReviewed", exact())
+                .withMatcher("poster", contains().ignoreCase())
+        return problemRepository!!.findAll(
+                Example.of(Problem(id,
+                            name,
+                            description,
+                            isReviewed,
+                            poster), matcher))
     }
 }
