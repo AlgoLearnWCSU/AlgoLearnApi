@@ -1,6 +1,6 @@
 package edu.wcsu.cs360.algolearn.model
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import javax.persistence.*
 
 
@@ -24,6 +24,16 @@ class TestCase {
     @Lob
     var sampleOutput: String? = null
 
+    constructor() { }
+
+    constructor(id:Int?, problem:Int?, isPublic:Boolean?, sampleInput:String?, sampleOutput:String?){
+        this.id = id
+        this.problem = problem
+        this.isPublic = isPublic
+        this.sampleInput = sampleInput
+        this.sampleOutput = sampleOutput
+    }
+
 }
 
-interface TestCaseRepository : CrudRepository<TestCase?, Int?>
+interface TestCaseRepository : JpaRepository<TestCase?, Int?>

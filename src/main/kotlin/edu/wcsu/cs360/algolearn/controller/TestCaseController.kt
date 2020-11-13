@@ -3,6 +3,9 @@ package edu.wcsu.cs360.algolearn.controller
 import edu.wcsu.cs360.algolearn.model.TestCase
 import edu.wcsu.cs360.algolearn.model.TestCaseRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.ExampleMatcher
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -75,5 +78,27 @@ class TestCaseController {
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         testcaseRepository.deleteById(tcid)
         return ResponseEntity(HttpStatus.OK)
+    }
+    @GetMapping(path= ["/search"])
+    fun searchParam(@RequestParam id: Int?,
+                    @RequestParam problem: Int?,
+                    @RequestParam public: Boolean?,
+                    @RequestParam sampleInput: String?,
+                    @RequestParam sampleOutput: String? ): Any {
+        val matcher: ExampleMatcher = ExampleMatcher
+                .matchingAll()
+                .withMatcher("id", exact())
+                .withMatcher("problem", exact())
+                .withMatcher("public", exact())
+                .withMatcher("sampleInput", contains().ignoreCase())
+                .withMatcher("sampleOutput", contains().ignoreCase())
+
+        return testcaseRepository!!.findAll(
+                Example.of(TestCase(id,
+                        problem,
+                        public,
+                        sampleInput,
+                        sampleOutput), matcher))
+
     }
 }
