@@ -37,7 +37,7 @@ Description*
     Problem*,
     IsPublic*,
     SampleInput*,
-    ExpectedOutput*
+    SampleOutput*
 )
 
 - Problem References Problem

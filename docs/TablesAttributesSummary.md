@@ -65,7 +65,7 @@ TCID | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
 Problem | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
 IsPublic | bool | true / false | Required | Store
 SampleInput | text | N/A | Required | Store
-ExpectedOutput | text | N/A | Required | Store
+SampleOutput | text | N/A | Required | Store
 
 <br>
 
