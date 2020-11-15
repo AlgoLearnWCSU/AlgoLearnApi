@@ -35,6 +35,9 @@ class CommentController {
         if (comment.id != null &&
                 commentRepository!!.findById(comment.id!!).isPresent)
             return ResponseEntity<Any>(HttpStatus.CONFLICT)
+        if(comment.timestamp == null){
+            comment.timestamp = java.util.Date()
+        }
         commentRepository?.save(comment)
         return comment
     }
