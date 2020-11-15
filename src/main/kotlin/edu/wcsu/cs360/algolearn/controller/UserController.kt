@@ -3,6 +3,9 @@ package edu.wcsu.cs360.algolearn.controller
 import edu.wcsu.cs360.algolearn.model.User
 import edu.wcsu.cs360.algolearn.model.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.ExampleMatcher
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -71,5 +74,27 @@ class UserController {
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         userRepository.deleteById(username)
         return ResponseEntity(HttpStatus.OK)
+    }
+
+    @GetMapping(path = ["/search"])
+    fun searchParam(@RequestParam username: String?,
+                    @RequestParam name: String?,
+                    @RequestParam email: String?,
+                    @RequestParam admin: Boolean?,
+                    @RequestParam avatar_url: String?) : Any {
+        val matcher: ExampleMatcher = ExampleMatcher
+                .matchingAll()
+                .withMatcher("username", contains().ignoreCase())
+                .withMatcher("name", contains().ignoreCase())
+                .withMatcher("email", contains().ignoreCase())
+                .withMatcher("isAdmin", exact())
+                .withMatcher("avatar_url", contains().ignoreCase())
+
+        return userRepository!!.findAll(
+                Example.of(User(username,
+                        name,
+                        email,
+                        admin,
+                        avatar_url), matcher))
     }
 }

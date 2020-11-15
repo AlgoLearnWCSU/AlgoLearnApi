@@ -1,6 +1,6 @@
 package edu.wcsu.cs360.algolearn.model
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import javax.persistence.*
 
 @Entity // This tells Hibernate to make a table out of this class
@@ -33,4 +33,4 @@ class User {
     }
 }
 
-interface UserRepository : CrudRepository<User?, String?>
+interface UserRepository : JpaRepository<User?, String?>

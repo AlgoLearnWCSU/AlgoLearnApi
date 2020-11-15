@@ -65,6 +65,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.microsoft.sqlserver:mssql-jdbc:8.4.1.jre11" level="project" />
     <orderEntry type="library" name="Maven: io.jsonwebtoken:jjwt:0.9.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.2" level="project" />
