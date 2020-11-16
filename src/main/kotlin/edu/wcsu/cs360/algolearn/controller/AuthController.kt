@@ -133,7 +133,7 @@ class AuthController {
             "dev" -> {
                 clientId = "Iv1.500c711bc765c8f5"
                 clientSecret = "5628f2b869e9469a7b415dda4f23ee5312144a36"
-                secureString = "Secure;"
+                secureString = "Secure; SameSite=None;"
             }
             else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
         }
@@ -184,7 +184,7 @@ class AuthController {
             authRepository!!.save(Auth(bcrypt!!.encode(jwt), user.login))
 
             val responseHeaders = HttpHeaders()
-            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly; SameSite=None")
+            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly;")
             return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(AuthUser(user.login, jwt, res.expires_in!!))
         } catch (err: HttpClientErrorException) {
             println(err)
@@ -197,6 +197,7 @@ class AuthController {
 
     @GetMapping(path = ["/refresh/{env}"])
     fun refresh(@CookieValue refresh_token: String?, @PathVariable env: String, response: HttpServletResponse): Any {
+        println("Refreshing with refresh token: $refresh_token")
 
         val clientId: String
         val clientSecret: String
@@ -210,7 +211,7 @@ class AuthController {
             "dev" -> {
                 clientId = "Iv1.500c711bc765c8f5"
                 clientSecret = "5628f2b869e9469a7b415dda4f23ee5312144a36"
-                secureString = "Secure;"
+                secureString = "Secure; SameSite=None;"
             }
             else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
         }
@@ -261,7 +262,7 @@ class AuthController {
             authRepository!!.save(Auth(bcrypt!!.encode(jwt), user.login))
 
             val responseHeaders = HttpHeaders()
-            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly; SameSite=None")
+            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly")
             return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(AuthUser(user.login, jwt, res.expires_in!!))
         } catch (err: HttpClientErrorException) {
             println(err)
