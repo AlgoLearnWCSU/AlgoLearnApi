@@ -272,8 +272,13 @@ class AuthController {
         return ""
     }
 
-    @GetMapping("/local-redirect")
-    fun redirectToLocal(@RequestParam code: String): Any {
-        return RedirectView("http://localhost:4200/#/home?code=$code")
+    @GetMapping("/redirect/{env}")
+    fun redirectToLocal(@RequestParam code: String, @PathVariable env: String): Any {
+        val url = when (env) {
+            "local" -> "http://localhost:4200/#/home"
+            "dev" -> "https://www.algolearn.dev/#/home"
+            else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
+        }
+        return RedirectView("$url?code=$code")
     }
 }
