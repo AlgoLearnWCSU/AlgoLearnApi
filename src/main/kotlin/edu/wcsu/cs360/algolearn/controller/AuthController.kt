@@ -101,7 +101,7 @@ class AuthController {
     private var restTemplate: RestTemplate? = null
 
 
-    @GetMapping(path = ["/login/{env}"])
+    @PostMapping(path = ["/login/{env}"])
     fun login(@RequestBody code: String, @PathVariable env: String, response: HttpServletResponse): Any {
         val clientId: String
         val clientSecret: String
