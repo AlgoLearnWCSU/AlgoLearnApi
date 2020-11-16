@@ -17,6 +17,8 @@ import org.springframework.web.servlet.view.RedirectView
 import java.security.Key
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletResponse
 import javax.xml.bind.DatatypeConverter
 
 
@@ -35,6 +37,10 @@ class GitHubEmailResponse(val email: String?,
 class GitHubUserResponse(val login: String?,
                           val avatar_url: String?,
                           var name: String?)
+
+data class AuthUser(val username: String?,
+                        val jwt: String?,
+                        val expires_in: Int)
 
 private const val SECRET_KEY = """oeRaYY7Wo24sDqKSX3IM9ASGmdGPmkTd9jo1QTy4b7P9Ze5_9hKolVX8xNrQDcNRfVEdTZNOuOyqEGhXEbdJI-ZQ19k_o9MI0y3eZN2lp9jow55FfXMiINEdt1XR85VipRLSOkT6kSpzs2x-jbLDiz9iFVzkd81YKxMgPA7VfZeQUm4n-mOmnWMaVX30zGFU4L3oPBctYKkl4dYfqYWqRNfrgPJVi5DGFjywgxx0ASEiJHtV72paI3fDR2XwlSkyhhmY-ICjCRmsJN4fX1pdoL8a18-aQrvyu4j0Os6dVPYIoPvvY0SAZtWYKHfM15g7A3HD4cVREf9cUsprCRK93w"""
 
@@ -96,19 +102,17 @@ class AuthController {
 
 
     @GetMapping(path = ["/login/{env}"])
-    fun login(@RequestParam code: String, @PathVariable env: String): Any {
-        var clientId: String
-        var clientSecret: String
-        val url = when(env) {
+    fun login(@RequestBody code: String, @PathVariable env: String, response: HttpServletResponse): Any {
+        val clientId: String
+        val clientSecret: String
+        when(env) {
             "local" -> {
                 clientId = "Iv1.2c3f97ee17f544a1"
                 clientSecret = "4106b49d691b7b0cdee692efad30d8d74e633d89"
-                "http://localhost:4200/#/home"
             }
             "dev" -> {
                 clientId = "Iv1.500c711bc765c8f5"
                 clientSecret = "5628f2b869e9469a7b415dda4f23ee5312144a36"
-                "https://agreeable-mud-0fd849a0f.azurestaticapps.net/#/home"
             }
             else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
         }
@@ -123,7 +127,7 @@ class AuthController {
                 "https://github.com/login/oauth/access_token",
                 GitHubAuthRequest(code, clientId, clientSecret),
                 GitHubAuthResponse::class.java)?.body
-                ?: return RedirectView("$url?login_failed=true")
+                ?: return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 
         // Create Auth header
         val headers = HttpHeaders()
@@ -132,7 +136,7 @@ class AuthController {
 
         // Get User emails
         val emails = restTemplate!!.exchange("https://api.github.com/user/emails", HttpMethod.GET, entity, Array<GitHubEmailResponse>::class.java).body
-                ?: return RedirectView("$url?login_failed=true")
+                ?: return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 
         // Set email from user emails
         emails.forEach {
@@ -142,7 +146,7 @@ class AuthController {
 
         // Get username, name, and avatar url
         val user = restTemplate!!.exchange("https://api.github.com/user", HttpMethod.GET, entity, GitHubUserResponse::class.java).body
-                ?: return RedirectView("$url?login_failed=true")
+                ?: return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 
         if(user.name == null) {
             user.name = user.login
@@ -162,6 +166,18 @@ class AuthController {
 
         println(test?.id)
 
-        return RedirectView("$url?jwt=$jwt&username=${user.login}")
+        val cookie = Cookie("refresh_token", res.refresh_token)
+        cookie.maxAge = res.refresh_token_expires_in
+        cookie.secure = true
+        cookie.isHttpOnly = true
+
+        response.addCookie(cookie)
+
+        return AuthUser(user.login, jwt, res.expires_in)
+    }
+
+    @GetMapping("/local-redirect")
+    fun redirectToLocal(@RequestParam code: String): Any {
+        return RedirectView("http://localhost:4200/#/home?code=$code")
     }
 }
