@@ -184,7 +184,7 @@ class AuthController {
             authRepository!!.save(Auth(bcrypt!!.encode(jwt), user.login))
 
             val responseHeaders = HttpHeaders()
-            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly")
+            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly; SameSite=None")
             return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(AuthUser(user.login, jwt, res.expires_in!!))
         } catch (err: HttpClientErrorException) {
             println(err)
@@ -261,7 +261,7 @@ class AuthController {
             authRepository!!.save(Auth(bcrypt!!.encode(jwt), user.login))
 
             val responseHeaders = HttpHeaders()
-            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly")
+            responseHeaders.add("Set-Cookie", "refresh_token=${res.refresh_token}; Max-Age=604800; Path=/; $secureString HttpOnly; SameSite=None")
             return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(AuthUser(user.login, jwt, res.expires_in!!))
         } catch (err: HttpClientErrorException) {
             println(err)
