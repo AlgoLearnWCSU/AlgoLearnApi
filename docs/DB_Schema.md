@@ -56,7 +56,7 @@ Description*
 - Problem References Problem
 
 **Comment**(
-    <ins>CommentID</ins>
+    <ins>CommentID</ins>,
     Commenter*,
     Problem*,
     Timestamp*,
@@ -64,4 +64,11 @@ Description*
 )
 
 - Commenter References User
+- Problem References Problem
+
+**Category**(
+    <ins>CategoryID</ins>,
+    Problem*,
+    Name*
+)
 - Problem References Problem
