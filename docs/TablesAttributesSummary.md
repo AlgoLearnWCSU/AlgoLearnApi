@@ -116,3 +116,19 @@ Commenter | char(32) | 1-(2^31)-1 | Required | Store
 Problem | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
 Timestamp | timestamptz[3] | 00:00:00+1459-24:00:00-1459 | Required | Store
 Comment | text | N/A | Required |Store
+
+## Category
+
+Table Name | Primary Key | Foreign Key | Uniqueness Constraint
+--- | --- | --- | ---
+Parameter | CategoryID | Problem references Problem | N/A
+
+<br>
+
+Name | Type | Range | Req / Opt | Derive / Store
+--- | --- | --- | --- | ---
+CategoryId | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
+CategoryId | bigserial(64-bit int) | 1-(2^64)-1 | Required | Store
+Name | char(32) | N/A | Required | Store
+
+<br>
