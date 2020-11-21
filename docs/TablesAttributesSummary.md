@@ -121,7 +121,7 @@ Comment | text | N/A | Required |Store
 
 Table Name | Primary Key | Foreign Key | Uniqueness Constraint
 --- | --- | --- | ---
-Parameter | CategoryID | Problem references Problem | N/A
+Category | CategoryID | Problem references Problem | N/A
 
 <br>
 
