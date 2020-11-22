@@ -21,11 +21,17 @@ class Solution {
     var code: String? = null
 
     @Column(nullable = false)
+    var languageId: Int? = null
+
+    @Column(nullable = false)
+    var tokens: String? = null
+
+    @Column(nullable = false)
     var passedTests: Int? = null
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIME)
-    var compTime: java.util.Date? = null
+    var avgCompTime: java.util.Date? = null
 
 }
 
