@@ -48,7 +48,6 @@ class AuthRequest {
     var code: String? = null
 }
 
-
 data class AuthUser(val username: String?,
                     val jwt: String?,
                     val expires_in: Int)

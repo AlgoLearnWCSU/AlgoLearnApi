@@ -1,7 +1,6 @@
 package edu.wcsu.cs360.algolearn.controller
 
-import edu.wcsu.cs360.algolearn.model.Problem
-import edu.wcsu.cs360.algolearn.model.ProblemRepository
+import edu.wcsu.cs360.algolearn.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.HttpStatus
@@ -15,6 +14,15 @@ import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 class ProblemController {
     @Autowired
     private val problemRepository: ProblemRepository? = null
+
+    @Autowired
+    private val parameterRepository: ParameterRepository? = null
+
+    @Autowired
+    private val testcaseRepository: TestCaseRepository? = null
+
+    @Autowired
+    private val commentRepository: CommentRepository? = null
 
     @GetMapping
     fun getDemProblems(): List<Problem?> {
@@ -71,6 +79,35 @@ class ProblemController {
     fun deleteProblemById(@PathVariable id: Int): ResponseEntity<Any> {
         if (problemRepository!!.findById(id).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
+
+        // Delete TestCases
+        testcaseRepository!!.findAll(
+                Example.of(TestCase(null,
+                        id,
+                        null,
+                        null,
+                        null), ExampleMatcher
+                        .matchingAll()
+                        .withMatcher("problem", exact()))).forEach {
+            testcaseRepository.deleteById(it.id!!)
+        }
+
+        // Delete Parameters
+        parameterRepository!!.findAll(
+                Example.of(Parameter(null, id, null), ExampleMatcher
+                        .matchingAll()
+                        .withMatcher("problem", exact()))).forEach {
+            testcaseRepository.deleteById(it.id!!)
+        }
+
+        // Delete Comments
+        commentRepository!!.findAll(
+                Example.of(Comment(null, null, id, null, null), ExampleMatcher
+                        .matchingAll()
+                        .withMatcher("problem", exact()))).forEach {
+            commentRepository.deleteById(it.id!!)
+        }
+
         problemRepository.deleteById(id)
         return ResponseEntity(HttpStatus.OK)
     }
@@ -79,9 +116,8 @@ class ProblemController {
     fun searchParam(@RequestParam id: Int?,
                     @RequestParam name:String?,
                     @RequestParam description: String?,
-                    @RequestParam isReviewed: Boolean?,
+                    @RequestParam reviewed: Boolean?,
                     @RequestParam poster: String?): Any {
-
         val matcher: ExampleMatcher = ExampleMatcher
                 .matchingAll()
                 .withMatcher("id", exact())
@@ -93,7 +129,7 @@ class ProblemController {
                 Example.of(Problem(id,
                             name,
                             description,
-                            isReviewed,
+                            reviewed,
                             poster), matcher))
     }
 }
