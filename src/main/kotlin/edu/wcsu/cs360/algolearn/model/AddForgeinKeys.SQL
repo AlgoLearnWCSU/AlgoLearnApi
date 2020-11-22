@@ -18,7 +18,7 @@ ALTER TABLE test_case
         REFERENCES problem (id)
         ON DELETE CASCADE;
 
-ALTER TABLE parameter
+ALTER TABLE category
     ADD CONSTRAINT parameter_problem_fk FOREIGN KEY (problem)
         REFERENCES problem (id)
         ON DELETE CASCADE;
