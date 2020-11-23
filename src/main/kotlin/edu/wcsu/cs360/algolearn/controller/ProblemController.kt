@@ -20,7 +20,7 @@ class ProblemController {
     private val problemRepository: ProblemRepository? = null
 
     @Autowired
-    private val parameterRepository: ParameterRepository? = null
+    private val categoryRepository: CategoryRepository? = null
 
     @Autowired
     private val testcaseRepository: TestCaseRepository? = null
@@ -159,12 +159,12 @@ class ProblemController {
             testcaseRepository.deleteById(it.id!!)
         }
 
-        // Delete Parameters
-        parameterRepository!!.findAll(
-                Example.of(Parameter(null, id, null), ExampleMatcher
+        // Delete Categories
+        categoryRepository!!.findAll(
+                Example.of(Category(null, id, null), ExampleMatcher
                         .matchingAll()
                         .withMatcher("problem", exact()))).forEach {
-            parameterRepository.deleteById(it.id!!)
+            categoryRepository.deleteById(it.id!!)
         }
 
         // Delete Comments
