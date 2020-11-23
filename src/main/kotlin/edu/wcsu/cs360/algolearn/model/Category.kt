@@ -1,9 +1,13 @@
 package edu.wcsu.cs360.algolearn.model
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import javax.persistence.*
+import javax.transaction.Transactional
 
-@Entity(name = "category") // This tells Hibernate to make a table out of this class
+@Entity // This tells Hibernate to make a table out of this class
 class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,4 +29,21 @@ class Category {
 
 }
 
-interface CategoryRepository : JpaRepository<Category?, Int?>
+interface CategoryRepository : JpaRepository<Category?, Int?>{
+
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query("update Category c set c.name = :name where c.id = :id")
+    fun updateNameById(@Param("id") id: Int, @Param("name") name: String)
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query("update Category c set c.problem = :problem where c.id = :id")
+    fun updateProblemById(@Param("id") id: Int, @Param("problem") problem: Int)
+
+
+
+}
+
+

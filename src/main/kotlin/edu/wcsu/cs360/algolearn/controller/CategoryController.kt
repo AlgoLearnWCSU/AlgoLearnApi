@@ -44,8 +44,13 @@ class CategoryController{
     fun replaceCategory(@PathVariable id: Int, @RequestBody category:Category): Any {
         if (categoryRepository!!.findById(id).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
-        categoryRepository.save(category)
+        category.id = id
+
+        categoryRepository.updateNameById(id, category.name!!)
+        categoryRepository.updateProblemById(id, category.problem!!)
+
         return category
+
     }
 
     @PatchMapping(path = ["/{id}"])
@@ -54,15 +59,24 @@ class CategoryController{
         if (oldCategory.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        if(id != category.problem)
-            categoryRepository.deleteById(id)
+        
 
         if(category.problem == null)
             category.problem = oldCategory.get().problem
         if(category.name == null)
             category.name = oldCategory.get().name
 
-        categoryRepository.save(category)
+        category.id = id
+
+        if(category.name != null)
+            categoryRepository.updateNameById(id, category.name!!)
+        else
+            category.name = oldCategory.get().name
+        if(category.problem != null)
+            categoryRepository.updateProblemById(id, category.problem!!)
+        else
+            category.problem = oldCategory.get().problem
+
 
         return category
     }
