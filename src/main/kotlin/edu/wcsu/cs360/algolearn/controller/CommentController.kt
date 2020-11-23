@@ -18,7 +18,6 @@ class CommentController {
 
     @GetMapping
     fun getDemComments(): List<Comment?> {
-        println("test")
         return commentRepository!!.findAll().toList()
     }
 
@@ -42,35 +41,44 @@ class CommentController {
         return comment
     }
 
-    @PutMapping(path = ["/{commentId}"])
-    fun replaceComment(@PathVariable commentId: Int, @RequestBody comment: Comment): Any {
-        if (commentRepository!!.findById(commentId).isEmpty)
+    @PutMapping(path = ["/{id}"])
+    fun replaceComment(@PathVariable id: Int, @RequestBody comment: Comment): Any {
+        if (commentRepository!!.findById(id).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
-        commentRepository.save(comment)
+
+        comment.id = id
+        commentRepository.updateCommenterById(id, comment.commenter!!)
+        commentRepository.updateProblemById(id, comment.problem!!)
+        commentRepository.updateTimeStampById(id, comment.timestamp!!)
+        commentRepository.updateCommentById(id, comment.comment!!)
+
         return comment
     }
 
-    @PatchMapping(path = ["/{commentId}"])
-    fun modifyComment(@PathVariable commentId: Int, @RequestBody comment: Comment): Any {
-        val oldComment = commentRepository!!.findById(commentId)
+    @PatchMapping(path = ["/{id}"])
+    fun modifyComment(@PathVariable id: Int, @RequestBody comment: Comment): Any {
+        val oldComment = commentRepository!!.findById(id)
         if (oldComment.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        if(commentId != comment.id)
-            commentRepository.deleteById(commentId)
 
-        if(comment.id == null)
-            comment.id = commentId
-        if(comment.commenter == null)
+        comment.id = id
+        if(comment.commenter != null)
+            commentRepository.updateCommenterById(id, comment.commenter!!)
+        else
             comment.commenter = oldComment.get().commenter
-        if(comment.problem == null)
+        if(comment.problem != null)
+            commentRepository.updateProblemById(id, comment.problem!!)
+        else
             comment.problem = oldComment.get().problem
-        if(comment.timestamp == null)
+        if(comment.timestamp != null)
+            commentRepository.updateTimeStampById(id, comment.timestamp!!)
+        else
             comment.timestamp = oldComment.get().timestamp
-        if(comment.comment == null)
+        if(comment.comment != null)
+            commentRepository.updateCommentById(id, comment.comment!!)
+        else
             comment.comment = oldComment.get().comment
-
-        commentRepository.save(comment)
 
         return comment
     }
