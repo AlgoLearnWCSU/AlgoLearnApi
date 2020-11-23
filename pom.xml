@@ -101,13 +101,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>central</id>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
-
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
