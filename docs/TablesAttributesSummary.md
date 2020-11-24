@@ -59,6 +59,7 @@
 | SolutionId  | Int    | N/A   | Required  | Store          |
 | Solver      | String | N/A   | Required  | Store          |
 | Problem     | Int    | N/A   | Required  | Store          |
+| Code        | String | N/A   | Required  | Store          |
 | PassedTests | Int    | N/A   | Optional  | Store          |
 | CompTime    | Float  | N/A   | Optional  | Store          |
 | Tokens      | String | N/A   | Optional  | Store          | s   |
