@@ -1,6 +1,6 @@
 package edu.wcsu.cs360.algolearn.model
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import javax.persistence.*
 
 
@@ -21,4 +21,4 @@ class Auth {
     }
 }
 
-interface AuthRepository : CrudRepository<Auth?, String?>
+interface AuthRepository : JpaRepository<Auth?, String?>
