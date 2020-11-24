@@ -41,7 +41,14 @@ class UserController {
     fun replaceUser(@PathVariable username: String, @RequestBody user: User): Any {
         if (userRepository!!.findById(username).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
-        userRepository.save(user)
+
+        user.username = username;
+
+        userRepository.updateAvatar_urlByUsername(username, user.avatar_url!!)
+        userRepository.updateEmailByUsername(username, user.email!!)
+        userRepository.updateIsAdminByUsername(username, user.isAdmin!!)
+        userRepository.updateNameByUsername(username, user.name!!)
+
         return user
     }
 
@@ -51,19 +58,20 @@ class UserController {
         if (oldUser.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        if(username != user.username)
-            userRepository.deleteById(username)
+        user.username = username
 
-        if(user.username == null)
-            user.username = username
-        if(user.name == null)
+        if(user.name != null)
+            userRepository.updateNameByUsername(username, user.name!!)
+        else
             user.name = oldUser.get().name
-        if(user.email == null)
+        if(user.email != null)
+            userRepository.updateEmailByUsername(username, user.email!!)
+        else
             user.email = oldUser.get().email
-        if(user.isAdmin == null)
+        if(user.isAdmin != null)
+            userRepository.updateIsAdminByUsername(username, user.isAdmin!!)
+        else
             user.isAdmin = oldUser.get().isAdmin
-
-        userRepository.save(user)
 
         return user
     }
