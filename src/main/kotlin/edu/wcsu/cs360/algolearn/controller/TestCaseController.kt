@@ -22,9 +22,9 @@ class TestCaseController {
         return testcaseRepository!!.findAll().toList()
     }
 
-    @GetMapping(path = ["/{tcid}"])
-    fun getDemTestCasesById(@PathVariable tcid: Int?): Any {
-        val data = testcaseRepository!!.findById(tcid!!)
+    @GetMapping(path = ["/{id}"])
+    fun getDemTestCasesById(@PathVariable id: Int?): Any {
+        val data = testcaseRepository!!.findById(id!!)
         if (data.isEmpty)
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
         return data.get()
@@ -39,44 +39,53 @@ class TestCaseController {
         return testcase
     }
 
-    @PutMapping(path = ["/{tcid}"])
-    fun replaceTestCase(@PathVariable tcid: Int, @RequestBody testcase: TestCase): Any {
-        if (testcaseRepository!!.findById(tcid).isEmpty)
+    @PutMapping(path = ["/{id}"])
+    fun replaceTestCase(@PathVariable id: Int, @RequestBody testcase: TestCase): Any {
+        if (testcaseRepository!!.findById(id).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
-        testcaseRepository.save(testcase)
+        testcase.id = id
+
+        testcaseRepository.updateIsPublicById(id, testcase.isPublic!!)
+        testcaseRepository.updateProblemById(id, testcase.problem!!)
+        testcaseRepository.updateSampleInputById(id, testcase.sampleInput!!)
+        testcaseRepository.updateSampleOutputById(id, testcase.sampleOutput!!)
+
         return testcase
     }
 
-    @PatchMapping(path = ["/{tcid}"])
-    fun modifyTestCase(@PathVariable tcid: Int, @RequestBody testcase: TestCase): Any {
-        val oldTestCase = testcaseRepository!!.findById(tcid)
+    @PatchMapping(path = ["/{id}"])
+    fun modifyTestCase(@PathVariable id: Int, @RequestBody testcase: TestCase): Any {
+        val oldTestCase = testcaseRepository!!.findById(id)
         if (oldTestCase.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        if(tcid != testcase.id)
-            testcaseRepository.deleteById(tcid)
+        testcase.id = id
 
-        if(testcase.id == null)
-            testcase.id = tcid
-        if(testcase.problem == null)
+        if(testcase.problem != null)
+            testcaseRepository.updateProblemById(id, testcase.problem!!)
+        else
             testcase.problem = oldTestCase.get().problem
-        if(testcase.isPublic == null)
+        if(testcase.isPublic != null)
+            testcaseRepository.updateIsPublicById(id, testcase.isPublic!!)
+        else
             testcase.isPublic = oldTestCase.get().isPublic
-        if(testcase.sampleInput == null)
+        if(testcase.sampleInput != null)
+            testcaseRepository.updateSampleInputById(id, testcase.sampleInput!!)
+        else
             testcase.sampleInput = oldTestCase.get().sampleInput
-        if(testcase.sampleOutput == null)
+        if(testcase.sampleOutput != null)
+            testcaseRepository.updateSampleOutputById(id, testcase.sampleOutput!!)
+        else
             testcase.sampleOutput = oldTestCase.get().sampleOutput
-
-        testcaseRepository.save(testcase)
 
         return testcase
     }
 
-    @DeleteMapping(path = ["/{tcid}"])
-    fun deleteTestCaseById(@PathVariable tcid: Int): ResponseEntity<Any> {
-        if (testcaseRepository!!.findById(tcid).isEmpty)
+    @DeleteMapping(path = ["/{id}"])
+    fun deleteTestCaseById(@PathVariable id: Int): ResponseEntity<Any> {
+        if (testcaseRepository!!.findById(id).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
-        testcaseRepository.deleteById(tcid)
+        testcaseRepository.deleteById(id)
         return ResponseEntity(HttpStatus.OK)
     }
     @GetMapping(path= ["/search"])
