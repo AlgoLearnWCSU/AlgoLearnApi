@@ -33,6 +33,9 @@ class ProblemController {
 
     @Autowired
     private val userRepository: UserRepository? = null
+
+    @Autowired
+    private val solutionRepository: SolutionRepository? = null
     
 
     @GetMapping
@@ -175,6 +178,12 @@ class ProblemController {
             commentRepository.deleteById(it.id!!)
         }
 
+        // Delete Solutions
+        solutionRepository!!.findAll(
+                Example.of(Solution(null, null, id, null, null, null, null, null), ExampleMatcher
+                        .matchingAll()
+                        .withMatcher("problem", exact()))).forEach {
+            solutionRepository.deleteById(it.id!!)}
 
         problemRepository.deleteById(id)
         return ResponseEntity(HttpStatus.OK)
