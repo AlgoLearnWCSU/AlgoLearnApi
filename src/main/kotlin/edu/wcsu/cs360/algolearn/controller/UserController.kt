@@ -1,7 +1,6 @@
 package edu.wcsu.cs360.algolearn.controller
 
-import edu.wcsu.cs360.algolearn.model.User
-import edu.wcsu.cs360.algolearn.model.UserRepository
+import edu.wcsu.cs360.algolearn.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.ExampleMatcher
@@ -9,12 +8,25 @@ import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 
 @RestController
 @RequestMapping(path = ["/user"])
 class UserController {
     @Autowired
     private val userRepository: UserRepository? = null
+
+    @Autowired
+    private val authRepository: AuthRepository? = null
+
+    @Autowired
+    private val commentRepository: CommentRepository? = null
+
+    @Autowired
+    private val problemRepository: ProblemRepository? = null
+
+    @Autowired
+    private val solutionRepository: SolutionRepository? = null
 
     @GetMapping
     fun getDemUsers(): List<User?> {
@@ -80,6 +92,39 @@ class UserController {
     fun deleteUserById(@PathVariable username: String): ResponseEntity<Any> {
         if (userRepository!!.findById(username).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
+
+        // Delete Auth
+        authRepository!!.findAll(
+                Example.of(Auth(null, username),
+                        ExampleMatcher.matchingAll()
+                        .withMatcher("user", exact()))).forEach {
+                            authRepository.deleteById(it.access_token!!)
+        }
+
+        // Delete Comments
+        commentRepository!!.findAll(
+                Example.of(Comment(null, username, null, null, null),
+                ExampleMatcher.matchingAll()
+                        .withMatcher("user", exact()))).forEach {
+                    commentRepository.deleteById(it.id!!)
+        }
+
+        // Delete Problems
+        problemRepository!!.findAll(
+                Example.of(Problem(null, null, null, null, username),
+                ExampleMatcher.matchingAll()
+                        .withMatcher("user", exact()))).forEach {
+                        problemRepository.deleteById(it.id!!)
+        }
+
+        // Delete Solutions
+        solutionRepository!!.findAll(
+                Example.of(Solution(null, username, null, null, null, null, null, null),
+                ExampleMatcher.matchingAll()
+                        .withMatcher("user", exact()))).forEach {
+                            solutionRepository.deleteById(it.id!!)
+        }
+
         userRepository.deleteById(username)
         return ResponseEntity(HttpStatus.OK)
     }
