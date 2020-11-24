@@ -10,9 +10,8 @@
 <ins>Username</ins>,
 Name*,
 Email*,
-isAdmin*
+isAdmin\*
 )
-
 
 **Problem**(
 <ins>ProblemID</ins>,
@@ -24,51 +23,44 @@ Description*
 
 - Poster references User
 
-**Parameter**(
-    <ins>ParameterID</ins>,
-    Problem*,
-    Name*
-)
-
-- Problem References Problem
-
 **Test Case**(
-    <ins>TCID</ins>,
-    Problem*,
-    IsPublic*,
-    SampleInput*,
-    SampleOutput*
+<ins>TCID</ins>,
+Problem*,
+IsPublic*,
+SampleInput*,
+SampleOutput*
 )
 
 - Problem References Problem
 
 **Solution**(
-    <ins>SolutionID*</ins>,
-    Solver*,
-    Problem*,
-    Code*,
-    PassedTests*,
-    CompTime*
-    TotalTests*
+<ins>SolutionID*</ins>,
+Solver*,
+Problem*,
+Code*,
+PassedTests*,
+CompTime*,
+Tokens\*
 )
 
 - Solver References User
 - Problem References Problem
 
 **Comment**(
-    <ins>CommentID</ins>,
-    Commenter*,
-    Problem*,
-    Timestamp*,
-    Comment*
+<ins>CommentID</ins>,
+Commenter*,
+Problem*,
+Timestamp*,
+Comment*
 )
 
 - Commenter References User
 - Problem References Problem
 
 **Category**(
-    <ins>CategoryID</ins>,
-    Problem*,
-    Name*
+<ins>CategoryID</ins>,
+Problem*,
+Name*
 )
+
 - Problem References Problem
