@@ -1,7 +1,6 @@
 package edu.wcsu.cs360.algolearn.controller
 
-import edu.wcsu.cs360.algolearn.model.TestCase
-import edu.wcsu.cs360.algolearn.model.TestCaseRepository
+import edu.wcsu.cs360.algolearn.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.ExampleMatcher
@@ -15,6 +14,15 @@ import org.springframework.web.bind.annotation.*
 class TestCaseController {
     @Autowired
     private val testcaseRepository: TestCaseRepository? = null
+
+    @Autowired
+    private val authRepository: AuthRepository? = null
+
+    @Autowired
+    private val userRepository: UserRepository? = null
+
+    @Autowired
+    private val problemRepository: ProblemRepository? = null
 
     @GetMapping
     fun getDemTestCases(): List<TestCase?> {
@@ -31,7 +39,11 @@ class TestCaseController {
     }
 
     @PostMapping // Map ONLY POST Requests
-    fun addNewTestCase(@RequestBody testcase: TestCase): Any {
+    fun addNewTestCase(@RequestBody testcase: TestCase, @RequestHeader("auth-token") authToken: String): Any {
+        val authSession = authRepository!!.findById(authToken)
+        if (authSession.isEmpty || authSession.get().username != problemRepository!!.findById(testcase.problem!!).get().poster &&
+                !userRepository!!.findById(authSession.get().username!!).get().isAdmin!!)
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
         if (testcase.id != null &&
                 testcaseRepository!!.findById(testcase.id!!).isPresent)
             return ResponseEntity<Any>(HttpStatus.CONFLICT)
@@ -40,7 +52,11 @@ class TestCaseController {
     }
 
     @PutMapping(path = ["/{id}"])
-    fun replaceTestCase(@PathVariable id: Int, @RequestBody testcase: TestCase): Any {
+    fun replaceTestCase(@PathVariable id: Int, @RequestBody testcase: TestCase, @RequestHeader("auth-token") authToken: String): Any {
+        val authSession = authRepository!!.findById(authToken)
+        if (authSession.isEmpty || authSession.get().username != problemRepository!!.findById(testcase.problem!!).get().poster &&
+                !userRepository!!.findById(authSession.get().username!!).get().isAdmin!!)
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
         if (testcaseRepository!!.findById(id).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
         testcase.id = id
@@ -54,7 +70,11 @@ class TestCaseController {
     }
 
     @PatchMapping(path = ["/{id}"])
-    fun modifyTestCase(@PathVariable id: Int, @RequestBody testcase: TestCase): Any {
+    fun modifyTestCase(@PathVariable id: Int, @RequestBody testcase: TestCase, @RequestHeader("auth-token") authToken: String): Any {
+        val authSession = authRepository!!.findById(authToken)
+        if (authSession.isEmpty || authSession.get().username != problemRepository!!.findById(testcase.problem!!).get().poster &&
+                !userRepository!!.findById(authSession.get().username!!).get().isAdmin!!)
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
         val oldTestCase = testcaseRepository!!.findById(id)
         if (oldTestCase.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
@@ -82,7 +102,11 @@ class TestCaseController {
     }
 
     @DeleteMapping(path = ["/{id}"])
-    fun deleteTestCaseById(@PathVariable id: Int): ResponseEntity<Any> {
+    fun deleteTestCaseById(@PathVariable id: Int, @RequestHeader("auth-token") authToken: String): ResponseEntity<Any> {
+        val authSession = authRepository!!.findById(authToken)
+        if (authSession.isEmpty || authSession.get().username != problemRepository!!.findById(id).get().poster &&
+                !userRepository!!.findById(authSession.get().username!!).get().isAdmin!!)
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
         if (testcaseRepository!!.findById(id).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         testcaseRepository.deleteById(id)
