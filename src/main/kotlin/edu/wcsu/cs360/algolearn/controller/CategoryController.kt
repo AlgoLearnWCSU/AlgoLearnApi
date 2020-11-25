@@ -1,7 +1,7 @@
 package edu.wcsu.cs360.algolearn.controller
 
-import edu.wcsu.cs360.algolearn.model.Category
-import edu.wcsu.cs360.algolearn.model.CategoryRepository
+
+import edu.wcsu.cs360.algolearn.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.ExampleMatcher
@@ -16,6 +16,15 @@ import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*
 class CategoryController{
     @Autowired
     private val categoryRepository: CategoryRepository? = null
+
+    @Autowired
+    private val authRepository: AuthRepository? = null
+
+    @Autowired
+    private val userRepository: UserRepository? = null
+
+    @Autowired
+    private val problemRepository: ProblemRepository? = null
 
     @GetMapping
     fun getDemCategories(): List<Category?> {
@@ -32,18 +41,40 @@ class CategoryController{
     }
 
     @PostMapping // Map ONLY POST Requests
-    fun addNewCategory(@RequestBody category: Category): Any {
+    fun addNewCategory(@RequestBody category: Category,
+                       @RequestHeader("auth-token")authToken: String): Any {
+        val authSession = authRepository!!.findById(authToken)
         println("Creating cate: $category")
         if (category.id != null && categoryRepository!!.findById(category.id!!).isPresent)
             return ResponseEntity<Any>(HttpStatus.CONFLICT)
+    val problem = problemRepository!!.findById(category.problem!!)
+        if (problem.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+        if (authSession.isEmpty ||
+                !((authSession.get().username == problem.get().poster) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
         categoryRepository?.save(category)
         return category
     }
 
     @PutMapping(path = ["/{id}"])
-    fun replaceCategory(@PathVariable id: Int, @RequestBody category:Category): Any {
+    fun replaceCategory(@PathVariable id: Int, @RequestBody category:Category,
+    @RequestHeader("auth-token") authToken: String): Any {
+
+        val authSession = authRepository!!.findById(authToken)
+
         if (categoryRepository!!.findById(id).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
+        val problem = problemRepository!!.findById(category.problem!!)
+        if (problem.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+        if (authSession.isEmpty ||
+                !((authSession.get().username == problem.get().poster) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
         category.id = id
 
         categoryRepository.updateNameById(id, category.name!!)
@@ -54,12 +85,29 @@ class CategoryController{
     }
 
     @PatchMapping(path = ["/{id}"])
-    fun modifyCategory(@PathVariable id: Int, @RequestBody category: Category): Any {
+    fun modifyCategory(@PathVariable id: Int, @RequestBody category: Category,
+                       @RequestHeader("auth-token") authToken: String): Any {
+
+        val authSession = authRepository!!.findById(authToken)
         val oldCategory = categoryRepository!!.findById(id)
+
         if (oldCategory.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        
+        var problem:java.util.Optional<Problem?> ?=null
+
+        problem = if(category.problem == null)
+            problemRepository!!.findById(oldCategory.get().problem!!)
+        else
+            problemRepository!!.findById(category.problem!!)
+
+        if (problem.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+
+        if (authSession.isEmpty ||
+                !((authSession.get().username == problem.get().poster) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         if(category.problem == null)
             category.problem = oldCategory.get().problem
@@ -82,7 +130,29 @@ class CategoryController{
     }
 
     @DeleteMapping(path = ["/{id}"])
-    fun deleteParameterById(@PathVariable id: Int): ResponseEntity<Any> {
+    fun deleteParameterById(@PathVariable id: Int, @RequestBody category: Category,
+    @RequestHeader("auth-token") authToken: String): ResponseEntity<Any> {
+
+
+        val authSession = authRepository!!.findById(authToken)
+        val oldCategory = categoryRepository!!.findById(id)
+        if(oldCategory.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
+
+        var problem:java.util.Optional<Problem?> ?=null
+
+        problem = if(category.problem == null)
+            problemRepository!!.findById(oldCategory.get().problem!!)
+        else
+            problemRepository!!.findById(category.problem!!)
+
+        if (problem.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+        if (authSession.isEmpty ||
+                !((authSession.get().username == problem.get().poster) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
         if (categoryRepository!!.findById(id).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         categoryRepository.deleteById(id)
