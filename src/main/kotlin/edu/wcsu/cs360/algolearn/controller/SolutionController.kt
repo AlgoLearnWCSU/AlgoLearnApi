@@ -186,15 +186,15 @@ class SolutionController {
     fun modifySolution(@PathVariable id: Int, @RequestBody solution: Solution, @RequestHeader("auth-token") authToken: String): Any {
         val oldSolution = solutionRepository!!.findById(id)
 
+        if (oldSolution.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
+
         val authSession = authRepository!!.findById(authToken)
 
         if (authSession.isEmpty ||
                 !((authSession.get().username == oldSolution.get().solver ) ||
                         userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
-
-        if (oldSolution.isEmpty)
-            return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
         var rerun = false
 
@@ -233,7 +233,7 @@ class SolutionController {
     @DeleteMapping(path = ["/{id}"])
     fun deleteSolutionById(@PathVariable id: Int, @RequestHeader("auth-token") authToken: String): ResponseEntity<Any> {
         if (solutionRepository!!.findById(id).isEmpty)
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
+            return ResponseEntity(HttpStatus.NOT_FOUND)
 
         val authSession = authRepository!!.findById(authToken)
 
@@ -270,8 +270,6 @@ class SolutionController {
             if (submission.stdin == null)
                 submission.stdin = ""
 
-            println("${submission.stdin}, ${submission.language_id}, ${submission.source_code}")
-
             body.submissions.add(submission)
         }
 
@@ -289,7 +287,6 @@ class SolutionController {
 
             val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}", HttpMethod.GET, HttpEntity("", headers),
                     ResponseGetBatch::class.java).body
-
 
             var time = 0.0
             var passed = 0
