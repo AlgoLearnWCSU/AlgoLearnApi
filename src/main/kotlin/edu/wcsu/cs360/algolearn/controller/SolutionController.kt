@@ -4,6 +4,7 @@ import edu.wcsu.cs360.algolearn.model.*
 import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.core.env.Environment
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.*
@@ -65,7 +66,9 @@ class SolutionController {
 
     private var restTemplate: RestTemplate? = null
 
-    private val apiKey = "fe73008d0cmsh5ad27cb522ca15bp1c24a5jsne2c7de669881"
+    @Autowired
+    private val env: Environment? = null
+
     private val apiHost = "judge0.p.rapidapi.com"
 
     private val viewModelJob = SupervisorJob()
@@ -102,7 +105,7 @@ class SolutionController {
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         val headers = HttpHeaders()
-        headers["x-rapidapi-key"] = apiKey
+        headers["x-rapidapi-key"] = env!!.getProperty("secrets.judge-zero-api-key")
         headers["x-rapidapi-host"] = apiHost
         headers["useQueryString"] = true.toString()
         headers["Connection"] = "keep-alive"
@@ -129,7 +132,7 @@ class SolutionController {
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         val headers = HttpHeaders()
-        headers["x-rapidapi-key"] = apiKey
+        headers["x-rapidapi-key"] = env!!.getProperty("secrets.judge-zero-api-key")
         headers["x-rapidapi-host"] = apiHost
         headers["useQueryString"] = true.toString()
         headers["Connection"] = "keep-alive"
@@ -253,7 +256,7 @@ class SolutionController {
         }
 
         val headers = HttpHeaders()
-        headers["x-rapidapi-key"] = apiKey
+        headers["x-rapidapi-key"] = env!!.getProperty("secrets.judge-zero-api-key")
         headers["x-rapidapi-host"] = apiHost
         headers["useQueryString"] = true.toString()
         headers["Connection"] = "keep-alive"
