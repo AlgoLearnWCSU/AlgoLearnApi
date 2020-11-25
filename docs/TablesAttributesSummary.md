@@ -62,7 +62,7 @@
 | Code        | String | N/A   | Required  | Store          |
 | PassedTests | Int    | N/A   | Optional  | Store          |
 | CompTime    | Float  | N/A   | Optional  | Store          |
-| Tokens      | String | N/A   | Optional  | Store          | s   |
+| Tokens      | String | N/A   | Optional  | Store          |     |
 
 <br>
 
