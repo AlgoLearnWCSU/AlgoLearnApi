@@ -1,10 +1,7 @@
 package edu.wcsu.cs360.algolearn.controller
 
+import edu.wcsu.cs360.algolearn.model.*
 import kotlinx.coroutines.*
-import edu.wcsu.cs360.algolearn.model.Solution
-import edu.wcsu.cs360.algolearn.model.SolutionRepository
-import edu.wcsu.cs360.algolearn.model.TestCase
-import edu.wcsu.cs360.algolearn.model.TestCaseRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.data.domain.Example
@@ -12,19 +9,17 @@ import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
-import java.sql.Time
-import kotlin.math.roundToLong
 
 class Status {
     var id = 0
     var description = ""
 }
 
-class RequestBatch{
+class RequestCreateBatch{
     var submissions = ArrayList<RequestCreateSubmission>()
 }
 
-class ResponseBatch{
+class ResponseGetBatch{
     var submissions = ArrayList<ResponseGetSubmission>()
 }
 
@@ -52,6 +47,7 @@ class ResponseGetSubmission {
 @RestController
 @RequestMapping(path = ["/solution"])
 class SolutionController {
+
     @Autowired
     private val testCaseRepository: TestCaseRepository? = null
 
@@ -59,12 +55,18 @@ class SolutionController {
     private val solutionRepository: SolutionRepository? = null
 
     @Autowired
+    private val userRepository: UserRepository? = null
+
+    @Autowired
+    private val authRepository: AuthRepository? = null
+
+    @Autowired
     private val restTemplateBuilder: RestTemplateBuilder? = null
 
     private var restTemplate: RestTemplate? = null
 
     private val apiKey = "fe73008d0cmsh5ad27cb522ca15bp1c24a5jsne2c7de669881"
-    private val apiHost = "https://judge0.p.rapidapi.com/"
+    private val apiHost = "judge0.p.rapidapi.com"
 
     private val viewModelJob = SupervisorJob()
     val viewmodelCoroutineScope = CoroutineScope(Dispatchers.IO + viewModelJob)
@@ -91,12 +93,68 @@ class SolutionController {
         return data.get()
     }
 
+    @GetMapping(path = ["/result/testcase/{token}"])
+    fun getTokenResult(@PathVariable token: String, @RequestHeader("auth-token") authToken: String): Any {
+
+        val authSession = authRepository!!.findById(authToken)
+
+        if ( authSession.isEmpty )
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
+        val headers = HttpHeaders()
+        headers["x-rapidapi-key"] = apiKey
+        headers["x-rapidapi-host"] = apiHost
+        headers["useQueryString"] = true.toString()
+        headers["Connection"] = "keep-alive"
+
+        if (restTemplate == null)
+            restTemplate = restTemplateBuilder!!.build()
+
+        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/${token}", HttpMethod.GET, HttpEntity("", headers),
+                ResponseGetSubmission::class.java).body
+
+        return res!!
+    }
+
+    @GetMapping(path = ["/result/{id}"])
+    fun getSolutionResult(@PathVariable id: Int, @RequestHeader("auth-token") authToken: String): Any {
+
+        val solution = solutionRepository!!.findById(id)
+        if (solution.isEmpty)
+            return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
+
+        val authSession = authRepository!!.findById(authToken)
+
+        if ( authSession.isEmpty )
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
+        val headers = HttpHeaders()
+        headers["x-rapidapi-key"] = apiKey
+        headers["x-rapidapi-host"] = apiHost
+        headers["useQueryString"] = true.toString()
+        headers["Connection"] = "keep-alive"
+
+        if (restTemplate == null)
+            restTemplate = restTemplateBuilder!!.build()
+
+        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.get().tokens}", HttpMethod.GET, HttpEntity("", headers),
+                ResponseGetBatch::class.java).body
+
+        return res!!
+    }
+
     @PostMapping // Map ONLY POST Requests
-    fun addNewSolution(@RequestBody solution: Solution): Any {
+    fun addNewSolution(@RequestBody solution: Solution, @RequestHeader("auth-token") authToken: String): Any {
 
         if (solution.id != null &&
                 solutionRepository!!.findById(solution.id!!).isPresent)
             return ResponseEntity<Any>(HttpStatus.CONFLICT)
+
+        val authSession = authRepository!!.findById(authToken)
+
+        if ( authSession.isEmpty || !(authSession.get().username == solution.solver ||
+                userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         val postedSolution = postSolutionJudgeZero(solution)
 
@@ -105,9 +163,16 @@ class SolutionController {
     }
 
     @PutMapping(path = ["/{id}"])
-    fun replaceSolution(@PathVariable id: Int, @RequestBody solution: Solution): Any {
+    fun replaceSolution(@PathVariable id: Int, @RequestBody solution: Solution, @RequestHeader("auth-token") authToken: String): Any {
         if (solutionRepository!!.findById(id).isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
+
+        val authSession = authRepository!!.findById(authToken)
+
+        if (authSession.isEmpty ||
+                !((authSession.get().username == solutionRepository.findById(id).get().solver ) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         solution.id = id
 
@@ -118,8 +183,16 @@ class SolutionController {
     }
 
     @PatchMapping(path = ["/{id}"])
-    fun modifySolution(@PathVariable id: Int, @RequestBody solution: Solution): Any {
+    fun modifySolution(@PathVariable id: Int, @RequestBody solution: Solution, @RequestHeader("auth-token") authToken: String): Any {
         val oldSolution = solutionRepository!!.findById(id)
+
+        val authSession = authRepository!!.findById(authToken)
+
+        if (authSession.isEmpty ||
+                !((authSession.get().username == oldSolution.get().solver ) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
         if (oldSolution.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
@@ -157,11 +230,19 @@ class SolutionController {
         return solution
     }
 
-    @DeleteMapping(path = ["/{solutionId}"])
-    fun deleteSolutionById(@PathVariable solutionId: Int): ResponseEntity<Any> {
-        if (solutionRepository!!.findById(solutionId).isEmpty)
+    @DeleteMapping(path = ["/{id}"])
+    fun deleteSolutionById(@PathVariable id: Int, @RequestHeader("auth-token") authToken: String): ResponseEntity<Any> {
+        if (solutionRepository!!.findById(id).isEmpty)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
-        solutionRepository.deleteById(solutionId)
+
+        val authSession = authRepository!!.findById(authToken)
+
+        if (authSession.isEmpty ||
+                !((authSession.get().username == solutionRepository.findById(id).get().solver ) ||
+                        userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
+            return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+
+        solutionRepository.deleteById(id)
         return ResponseEntity(HttpStatus.OK)
     }
 
@@ -172,11 +253,12 @@ class SolutionController {
         }
 
         val headers = HttpHeaders()
-        headers["x-rapidapi-key"] = "4f06d70076msh666d1184a5becedp13ef9cjsn9271945f91cf"
-        headers["x-rapidapi-host"] = "judge0.p.rapidapi.com"
+        headers["x-rapidapi-key"] = apiKey
+        headers["x-rapidapi-host"] = apiHost
         headers["useQueryString"] = true.toString()
+        headers["Connection"] = "keep-alive"
 
-        val body = RequestBatch()
+        val body = RequestCreateBatch()
 
         for (iter in 0 until testCases.size) {
             val submission = RequestCreateSubmission()
@@ -184,6 +266,11 @@ class SolutionController {
             submission.stdin = testCases[iter].sampleInput!!
             submission.source_code = solution.code!!
             submission.language_id = solution.languageId!!
+
+            if (submission.stdin == null)
+                submission.stdin = ""
+
+            println("${submission.stdin}, ${submission.language_id}, ${submission.source_code}")
 
             body.submissions.add(submission)
         }
@@ -201,7 +288,7 @@ class SolutionController {
             delay(5000)
 
             val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}", HttpMethod.GET, HttpEntity("", headers),
-                    ResponseBatch::class.java).body
+                    ResponseGetBatch::class.java).body
 
 
             var time = 0.0
