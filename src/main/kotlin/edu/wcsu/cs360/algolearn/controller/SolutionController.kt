@@ -307,4 +307,33 @@ class SolutionController {
         }
         return solution
     }
+    @GetMapping(path = ["/search"])
+    fun searchSolution(@RequestParam id: Int?,
+                       @RequestParam solver: String?,
+                       @RequestParam problem: Int?,
+                       @RequestParam code: String?,
+                       @RequestParam languageId: Int?,
+                       @RequestParam tokens: String?,
+                       @RequestParam passedTests: Int?,
+                       @RequestParam avgCompTime: Double?): Any {
+        val matcher: ExampleMatcher = ExampleMatcher
+                .matchingAll()
+                .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("solver", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("problem", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("code", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("languageId", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("tokens", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("passedTests", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("avgCompTime", ExampleMatcher.GenericPropertyMatchers.exact())
+        return solutionRepository!!.findAll(
+                Example.of(Solution(id,
+                        solver,
+                        problem,
+                        code,
+                        languageId,
+                        tokens,
+                        passedTests,
+                        avgCompTime), matcher))
+    }
 }
