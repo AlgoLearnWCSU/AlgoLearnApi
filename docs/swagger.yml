@@ -1250,7 +1250,7 @@ components:
           type: string
         email:
           type: string
-        admin:
+        isAdmin:
           type: boolean
     Response_User:
       type: object
@@ -1367,12 +1367,8 @@ components:
           type: integer
         code:
           type: string
-        passedTests:
-          type: integer
-        compTime:
+        tokens:
           type: string
-        totalTests:
-          type: integer
     Response_Solution:
       type: object
       required:
@@ -1380,9 +1376,7 @@ components:
         - solver
         - problem
         - code
-        - passedTests
-        - compTime
-        - totalTests
+        - tokens
       properties:
         solutionId:
           type: integer
@@ -1396,8 +1390,8 @@ components:
           type: integer
         compTime:
           type: double
-        totalTests:
-          type: integer
+        tokens:
+          type: string
     Request_Comment:
       type: object
       required:

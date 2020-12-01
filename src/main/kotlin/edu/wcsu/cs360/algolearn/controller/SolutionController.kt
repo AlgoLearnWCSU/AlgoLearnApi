@@ -1,5 +1,6 @@
 package edu.wcsu.cs360.algolearn.controller
 
+import edu.wcsu.cs360.algolearn.controller.*
 import edu.wcsu.cs360.algolearn.model.*
 import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,15 +17,15 @@ class Status {
     var description = ""
 }
 
-class RequestCreateBatch{
+class RequestCreateBatch {
     var submissions = ArrayList<RequestCreateSubmission>()
 }
 
-class ResponseGetBatch{
+class ResponseGetBatch {
     var submissions = ArrayList<ResponseGetSubmission>()
 }
 
-class RequestCreateSubmission{
+class RequestCreateSubmission {
     var language_id = 0
     var source_code = ""
     var stdin = ""
@@ -101,7 +102,7 @@ class SolutionController {
 
         val authSession = authRepository!!.findById(authToken)
 
-        if ( authSession.isEmpty )
+        if (authSession.isEmpty)
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         val headers = HttpHeaders()
@@ -113,7 +114,7 @@ class SolutionController {
         if (restTemplate == null)
             restTemplate = restTemplateBuilder!!.build()
 
-        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/${token}", HttpMethod.GET, HttpEntity("", headers),
+        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/$token", HttpMethod.GET, HttpEntity("", headers),
                 ResponseGetSubmission::class.java).body
 
         return res!!
@@ -128,7 +129,7 @@ class SolutionController {
 
         val authSession = authRepository!!.findById(authToken)
 
-        if ( authSession.isEmpty )
+        if (authSession.isEmpty)
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
         val headers = HttpHeaders()
@@ -155,7 +156,7 @@ class SolutionController {
 
         val authSession = authRepository!!.findById(authToken)
 
-        if ( authSession.isEmpty || !(authSession.get().username == solution.solver ||
+        if (authSession.isEmpty || !(authSession.get().username == solution.solver ||
                 userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
@@ -173,7 +174,7 @@ class SolutionController {
         val authSession = authRepository!!.findById(authToken)
 
         if (authSession.isEmpty ||
-                !((authSession.get().username == solutionRepository.findById(id).get().solver ) ||
+                !((authSession.get().username == solutionRepository.findById(id).get().solver) ||
                         userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
@@ -195,7 +196,7 @@ class SolutionController {
         val authSession = authRepository!!.findById(authToken)
 
         if (authSession.isEmpty ||
-                !((authSession.get().username == oldSolution.get().solver ) ||
+                !((authSession.get().username == oldSolution.get().solver) ||
                         userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
@@ -203,7 +204,7 @@ class SolutionController {
 
         solution.id = id
 
-        if(solution.solver != null)
+        if (solution.solver != null)
             solutionRepository.updateSolverById(id, solution.solver!!)
         else
             solution.solver = oldSolution.get().solver
@@ -212,21 +213,19 @@ class SolutionController {
         else
             solution.problem = oldSolution.get().problem
         if (solution.code != null) {
-            solutionRepository.updateCodeById(id,solution.code!!)
+            solutionRepository.updateCodeById(id, solution.code!!)
             rerun = true
-        }
-        else
+        } else
             solution.code = oldSolution.get().code
-        if(solution.languageId != null) {
+        if (solution.languageId != null) {
             solutionRepository.updateLanguageIdById(id, solution.languageId!!)
             rerun = true
-        }
-        else
+        } else
             solution.languageId = oldSolution.get().languageId
 
-        if(rerun){
+        if (rerun) {
             val postedSolution = postSolutionJudgeZero(solution)
-            solutionRepository!!.updateTokensById(id, postedSolution.tokens!!);
+            solutionRepository!!.updateTokensById(id, postedSolution.tokens!!)
             return postedSolution
         }
 
@@ -241,7 +240,7 @@ class SolutionController {
         val authSession = authRepository!!.findById(authToken)
 
         if (authSession.isEmpty ||
-                !((authSession.get().username == solutionRepository.findById(id).get().solver ) ||
+                !((authSession.get().username == solutionRepository.findById(id).get().solver) ||
                         userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
@@ -249,7 +248,7 @@ class SolutionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
-    fun postSolutionJudgeZero(solution: Solution) : Solution{
+    fun postSolutionJudgeZero(solution: Solution): Solution {
         val testCases = searchTestCaseByProblemId(solution.problem)
         if (restTemplate == null) {
             restTemplate = restTemplateBuilder!!.build()
@@ -283,24 +282,51 @@ class SolutionController {
             tokenString += "${it.token},"
         }
 
-        solution.tokens = tokenString.substring(0,tokenString.length - 1)
+        solution.tokens = tokenString.substring(0, tokenString.length - 1)
 
         viewmodelCoroutineScope.launch {
-            delay(5000)
+            delay(3000)
+            var res : ResponseGetBatch? = null
 
-            val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}", HttpMethod.GET, HttpEntity("", headers),
-                    ResponseGetBatch::class.java).body
+            var pending: Boolean = true
+            while(pending) {
+                delay(2000)
+
+                res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}", HttpMethod.GET, HttpEntity("", headers),
+                        ResponseGetBatch::class.java).body
+
+                pending = false
+                for(submission in res!!.submissions){
+                    if(submission.status!!.id == 2)
+                        pending = true
+                }
+            }
+
 
             var time = 0.0
             var passed = 0
+            var runTestCount = 0
 
             for (subNum in 0 until testCases.size) {
+                var actual: String? = null
+                var expected: String? = null
                 if (res!!.submissions[subNum].status!!.id == 3) {
                     time += res.submissions[subNum].time!!.toDouble()
-                    if(res.submissions[subNum].stdout != null && res.submissions[subNum].stdout!!.compareTo(testCases[subNum].sampleOutput!!) == 0)
+                    runTestCount++
+
+                    actual = res.submissions[subNum].stdout
+                    expected = testCases[subNum].sampleOutput
+
+                    while (actual != null && actual.endsWith('\n'))
+                        actual = actual.substring(0, actual.length - 1)
+                    while (expected != null && expected.endsWith('\n'))
+                        expected = expected.substring(0, expected.length - 1)
+                    if (actual != null && expected != null && actual!!.compareTo(expected!!) == 0)
                         passed++
                 }
             }
+
+            time /= runTestCount
 
             solutionRepository!!.updatePassedTestsById(solution.id!!, passed)
             solutionRepository.updateAvgCompTimeById(solution.id!!, time)
@@ -308,14 +334,16 @@ class SolutionController {
         return solution
     }
     @GetMapping(path = ["/search"])
-    fun searchSolution(@RequestParam id: Int?,
-                       @RequestParam solver: String?,
-                       @RequestParam problem: Int?,
-                       @RequestParam code: String?,
-                       @RequestParam languageId: Int?,
-                       @RequestParam tokens: String?,
-                       @RequestParam passedTests: Int?,
-                       @RequestParam avgCompTime: Double?): Any {
+    fun searchSolution(
+        @RequestParam id: Int?,
+        @RequestParam solver: String?,
+        @RequestParam problem: Int?,
+        @RequestParam code: String?,
+        @RequestParam languageId: Int?,
+        @RequestParam tokens: String?,
+        @RequestParam passedTests: Int?,
+        @RequestParam avgCompTime: Double?
+    ): Any {
         val matcher: ExampleMatcher = ExampleMatcher
                 .matchingAll()
                 .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.exact())
