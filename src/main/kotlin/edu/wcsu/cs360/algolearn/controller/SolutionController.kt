@@ -114,7 +114,7 @@ class SolutionController {
         if (restTemplate == null)
             restTemplate = restTemplateBuilder!!.build()
 
-        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/$token", HttpMethod.GET, HttpEntity("", headers),
+        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/$token?base64_encoded=true", HttpMethod.GET, HttpEntity("", headers),
                 ResponseGetSubmission::class.java).body
 
         return res!!
@@ -141,7 +141,7 @@ class SolutionController {
         if (restTemplate == null)
             restTemplate = restTemplateBuilder!!.build()
 
-        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.get().tokens}", HttpMethod.GET, HttpEntity("", headers),
+        val res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.get().tokens}&base64_encoded=true", HttpMethod.GET, HttpEntity("", headers),
                 ResponseGetBatch::class.java).body
 
         return res!!
@@ -292,12 +292,14 @@ class SolutionController {
             while(pending) {
                 delay(2000)
 
-                res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}", HttpMethod.GET, HttpEntity("", headers),
+                println("tokens: ${solution.tokens}")
+
+                res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}&base64_encoded=true", HttpMethod.GET, HttpEntity("", headers),
                         ResponseGetBatch::class.java).body
 
                 pending = false
                 for(submission in res!!.submissions){
-                    if(submission.status!!.id == 2)
+                    if(submission.status!!.id == 1 || submission.status!!.id == 2)
                         pending = true
                 }
             }
@@ -326,7 +328,10 @@ class SolutionController {
                 }
             }
 
-            time /= runTestCount
+            if(runTestCount != 0)
+                time /= runTestCount
+
+            println("time: $time, passed: $passed, solutionid: ${solution.id}")
 
             solutionRepository!!.updatePassedTestsById(solution.id!!, passed)
             solutionRepository.updateAvgCompTimeById(solution.id!!, time)
