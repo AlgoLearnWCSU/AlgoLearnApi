@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
-  version: 0.0.0
+  version: 0.1.0
   title: AlgoLearn
 servers:
-  - url: "http://localhost:8080"
+  - url: "https://algolearn-backend.azurewebsites.net"
 paths:
   /user:
     get:
@@ -32,7 +32,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "User object to create"
         required: true
@@ -81,23 +81,14 @@ paths:
           schema:
             type: string
             format: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "User object to create"
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                name:
-                  type: string
-                email:
-                  type: string
-                admin:
-                  type: boolean
+              - $ref: "#/components/schemas/Request_User"
       responses:
         "200":
           description: "User Modified"
@@ -117,7 +108,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "User object to create"
         required: true
@@ -144,7 +135,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "User Deleted"
@@ -161,12 +152,6 @@ paths:
           required: false
           schema:
             type: string
-        - name: page
-          in: query
-          description: "Page number of search results"
-          required: false
-          schema:
-            type: integer
         - name: name
           in: query
           description: "The name of the user"
@@ -227,7 +212,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "Problem Created"
@@ -235,14 +220,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response_Problem"
-  /problem/{problemId}:
+  /problem/{id}:
     get:
       summary: "Get a problem by ID."
       operationId: getProblem
       tags:
         - Problem
       parameters:
-        - name: problemId
+        - name: id
           in: path
           description: "ID of the problem"
           required: true
@@ -261,13 +246,13 @@ paths:
       tags:
         - Problem
       parameters:
-        - name: problemId
+        - name: id
           in: path
           description: "ID of the problem"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Problem object to create"
         required: true
@@ -276,7 +261,7 @@ paths:
             schema:
               type: object
               properties:
-                problemid:
+                id:
                   type: integer
                 poster:
                   type: string
@@ -297,13 +282,13 @@ paths:
       tags:
         - Problem
       parameters:
-        - name: problemId
+        - name: id
           in: path
           description: "ID of the problem"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Problem object to create"
         required: true
@@ -324,13 +309,13 @@ paths:
       tags:
         - Problem
       parameters:
-        - name: problemId
+        - name: id
           in: path
           description: "ID of problem"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "Problem Deleted"
@@ -341,7 +326,7 @@ paths:
       tags:
         - Problem
       parameters:
-        - name: problemId
+        - name: id
           in: query
           description: "Part or all of id of the problem"
           required: false
@@ -353,12 +338,6 @@ paths:
           required: false
           schema:
             type: string
-        - name: page
-          in: query
-          description: "Page number of search results"
-          required: false
-          schema:
-            type: integer
         - name: reviewed
           in: query
           description: "Whether or not the problem has been reviewed by admins"
@@ -380,178 +359,148 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response_Problem"
-  /parameter:
+  /category:
     get:
-      summary: "Get all pararmeters"
-      operationId: listParameters
+      summary: "Get all categories"
+      operationId: listCategories
       tags:
-        - Parameter
+        - Category
       responses:
         "200":
-          description: "A list of all parameters"
+          description: "A list of all categories"
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response_Parameter"
+                  $ref: "#/components/schemas/Response_Category"
     post:
-      summary: "Create a new parameter"
-      operationId: createParameter
+      summary: "Create a new Category"
+      operationId: createCategory
       tags:
-        - Parameter
+        - Category
       parameters:
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
-        description: "Parameter object to create"
+        description: "Category object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request_Parameter"
+              $ref: "#/components/schemas/Request_Category"
       responses:
         "200":
-          description: "Parameter created"
+          description: "Category created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response_Parameter"
-  /parameter/{problem}/{name}:
+                $ref: "#/components/schemas/Response_Category"
+  /category/{id}:
     get:
-      summary: "Get a parameter by its problem and name"
-      operationId: getParameter
+      summary: "Get a category by its id"
+      operationId: getCategory
       tags:
-        - Parameter
+        - Category
       parameters:
-        - name: problem
+        - name: id
           in: path
-          description: "ID of the problem the parameter is meant to be passed into"
+          description: "ID of the category"
           required: true
           schema:
             type: integer
-        - name: name
-          in: path
-          description: "The name of the parameter"
-          required: true
-          schema:
-            type: string
       responses:
         "200":
-          description: "Get a parameter by problem and name"
+          description: "Get a category by id"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response_Parameter"
+                $ref: "#/components/schemas/Response_Category"
     patch:
-      summary: "Modify an existing parameter by its problem and name."
-      operationId: modifyParameter
+      summary: "Modify an existing category by its id."
+      operationId: modifyCategory
       tags:
-        - Parameter
+        - Category
       parameters:
-        - name: problem
+        - name: id
           in: path
-          description: "ID of the parameter's problem"
+          description: "ID of the category"
           required: true
           schema:
             type: integer
-        - name: name
-          in: path
-          description: "The parameter's name"
-          required: true
-          schema:
-            type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
-        description: "Parameter object to create"
+        description: "Category object to create"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request_Parameter"
+              $ref: "#/components/schemas/Request_Category"
       responses:
         "200":
-          description: "Parameter modified"
+          description: "Category modified"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response_Parameter"
+                $ref: "#/components/schemas/Response_Category"
     put:
-      summary: "Replace an existing parameter with a new one"
-      operationId: replaceParameter
+      summary: "Replace an existing category with a new one"
+      operationId: replaceCategory
       tags:
-        - Parameter
+        - Category
       parameters:
-        - name: problem
+        - name: id
           in: path
-          description: "ID of the parameter's problem"
+          description: "ID of the category"
           required: true
           schema:
             type: integer
-        - name: name
-          in: path
-          description: "The parameter's name"
-          required: true
-          schema:
-            type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
-        description: "Parameter object to replace existing one with"
+        description: "Category object to replace existing one with"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Request_Parameter"
+              $ref: "#/components/schemas/Request_Category"
       responses:
         "200":
-          description: "Parameter replaced"
+          description: "Category replaced"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response_Parameter"
+                $ref: "#/components/schemas/Response_Category"
     delete:
-      summary: "Delete an existing parameter"
-      operationId: deleteParameter
+      summary: "Delete an existing category"
+      operationId: deleteCategory
       tags:
-        - Parameter
+        - Category
       parameters:
-        - name: problem
+        - name: id
           in: path
-          description: "ID of parameter's problem"
+          description: "ID of category"
           required: true
           schema:
             type: integer
-        - name: name
-          in: path
-          description: "name of the parameter"
-          required: true
-          schema:
-            type: string
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "Parameter Deleted"
-  /parameter/search:
+  /category/search:
     get:
-      summary: "Search for a parameter"
-      operationId: searchParameter
+      summary: "Search for a category"
+      operationId: searchCategory
       tags:
-        - Parameter
+        - Category
       parameters:
-        - name: problem
+        - name: id
           in: query
-          description: "Part or all of the ID of the parameter's problem"
-          required: false
-          schema:
-            type: integer
-        - name: page
-          in: query
-          description: "Page number of search results"
+          description: "ID of the category"
           required: false
           schema:
             type: integer
         - name: name
           in: query
-          description: "The parameter's name"
+          description: "The category's name"
           required: false
           schema:
             type: string
@@ -563,7 +512,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Response_Parameter"
+                  $ref: "#/components/schemas/Response_Category"
   /testcase:
     get:
       summary: "Get all test cases"
@@ -585,7 +534,7 @@ paths:
       tags:
         - Test Case
       parameters:
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Test case object to create"
         required: true
@@ -600,14 +549,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response_Test_Case"
-  /testcase/{tcid}:
+  /testcase/{id}:
     get:
       summary: "Get a test case by ID"
       operationId: getTestCase
       tags:
         - Test Case
       parameters:
-        - name: tcid
+        - name: id
           in: path
           description: "ID of test case"
           required: true
@@ -635,13 +584,13 @@ paths:
       tags:
         - Test Case
       parameters:
-        - name: tcid
+        - name: id
           in: path
           description: "ID of the test case"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Test case object to create"
         required: true
@@ -650,7 +599,7 @@ paths:
             schema:
               type: object
               properties:
-                tcid:
+                id:
                   type: integer
                 problem:
                   type: integer
@@ -673,13 +622,13 @@ paths:
       tags:
         - Test Case
       parameters:
-        - name: tcid
+        - name: id
           in: path
           description: "ID of the test case"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Test case object to create"
         required: true
@@ -700,13 +649,13 @@ paths:
       tags:
         - Test Case
       parameters:
-        - name: tcid
+        - name: id
           in: path
           description: "ID of test case"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "Test Case Deleted"
@@ -717,7 +666,7 @@ paths:
       tags:
         - Test Case
       parameters:
-        - name: tcid
+        - name: id
           in: query
           description: "Part or all of the ID of the test case"
           required: false
@@ -726,12 +675,6 @@ paths:
         - name: problem
           in: query
           description: "Part or all of the ID of the test case's problem"
-          required: false
-          schema:
-            type: integer
-        - name: page
-          in: query
-          description: "Page number of search results"
           required: false
           schema:
             type: integer
@@ -783,7 +726,7 @@ paths:
       tags:
         - Solution
       parameters:
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Solution object to create"
         required: true
@@ -798,14 +741,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response_Solution"
-  /solution/{solutionId}:
+  /solution/{id}:
     get:
       summary: "Get a solution by ID."
       operationId: getSolution
       tags:
         - Solution
       parameters:
-        - name: solutionId
+        - name: id
           in: path
           description: "ID of the solution"
           required: true
@@ -824,13 +767,13 @@ paths:
       tags:
         - Solution
       parameters:
-        - name: solutionId
+        - name: id
           in: path
           description: "ID of the solution"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Solution object to create"
         required: true
@@ -839,7 +782,7 @@ paths:
             schema:
               type: object
               properties:
-                solutionId:
+                id:
                   type: integer
                 solver:
                   type: integer
@@ -864,13 +807,13 @@ paths:
       tags:
         - Solution
       parameters:
-        - name: solutionId
+        - name: id
           in: path
           description: "ID of the solution"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Solution object to create"
         required: true
@@ -891,13 +834,13 @@ paths:
       tags:
         - Solution
       parameters:
-        - name: solutionId
+        - name: id
           in: path
           description: "ID of solution"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "Solution Deleted"
@@ -908,7 +851,7 @@ paths:
       tags:
         - Solution
       parameters:
-        - name: solutionId
+        - name: id
           in: query
           description: "Part or all of the ID of the solution"
           required: false
@@ -923,12 +866,6 @@ paths:
         - name: problem
           in: query
           description: "Part or all of the ID of the solution's problem"
-          required: false
-          schema:
-            type: integer
-        - name: page
-          in: query
-          description: "Page number of search results"
           required: false
           schema:
             type: integer
@@ -980,13 +917,13 @@ paths:
       tags:
         - Comment
       parameters:
-        - name: problemId
+        - name: id
           in: path
           description: "ID of the problem"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Comment object to create"
         required: true
@@ -1001,7 +938,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response_Comment"
-  /comment/{commentId}:
+  /comment/{id}:
     get:
       summary: "Get Comment by Id"
       operationId: getComment
@@ -1020,13 +957,13 @@ paths:
       tags:
         - Comment
       parameters:
-        - name: commentId
+        - name: id
           in: path
           description: "ID of the Comment to modify"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Modified Comment"
         required: true
@@ -1050,13 +987,13 @@ paths:
       tags:
         - Comment
       parameters:
-        - name: commentId
+        - name: id
           in: path
           description: "ID of the Comment to overwrite"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       requestBody:
         description: "Replacing Comment object"
         required: true
@@ -1077,13 +1014,13 @@ paths:
       tags:
         - Comment
       parameters:
-        - name: commentId
+        - name: id
           in: path
           description: "ID of comment"
           required: true
           schema:
             type: integer
-        - $ref: "#/components/parameters/Auth_Token"
+        - $ref: "#/components/parameters/auth-token"
       responses:
         "200":
           description: "Comment Deleted"
@@ -1094,9 +1031,9 @@ paths:
       tags:
         - Comment
       parameters:
-        - name: commentId
+        - name: id
           in: query
-          description: "Part or all of the commentId"
+          description: "Part or all of the id of the comment"
           required: false
           schema:
             type: string
@@ -1124,12 +1061,6 @@ paths:
           required: false
           schema:
             type: string
-        - name: page
-          in: query
-          description: "Page number of search results"
-          required: false
-          schema:
-            type: integer
       responses:
         "200":
           description: "List of Comments"
@@ -1139,101 +1070,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Response_Comment"
-  /auth:
-    post:
-      summary: "Sign in a user"
-      operationId: sign-in
-      tags:
-        - Authorization
-      requestBody:
-        description: "The code returned from GitHub or Microsoft via OAuth2.0"
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - code
-              properties:
-                code:
-                  type: string
-      responses:
-        "200":
-          description: "User signed in"
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - access_token
-                  - expire_time
-                  - refresh_token
-                  - refresh_expire_time
-                properties:
-                  access_token:
-                    type: string
-                  expire_time:
-                    type: integer
-                  refresh_token:
-                    type: string
-                  refresh_expire_time:
-                    type: integer
-    delete:
-      summary: "Sign out a user"
-      operationId: sign-out
-      tags:
-        - Authorization
-      parameters:
-        - $ref: "#/components/parameters/Auth_Token"
-      responses:
-        "200":
-          description: "User logged out"
-  /auth/refresh:
-    post:
-      summary: "Refresh a user's access token"
-      operationId: refreshAccessToken
-      tags:
-        - Authorization
-      requestBody:
-        description: "The refresh token"
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - refresh_token
-              properties:
-                refresh_token:
-                  type: string
-      responses:
-        "200":
-          description: "User signed in"
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - access_token
-                  - expire_time
-                  - refresh_token
-                  - refresh_expire_time
-                properties:
-                  access_token:
-                    type: string
-                  expire_time:
-                    type: integer
-                  refresh_token:
-                    type: string
-                  refresh_expire_time:
-                    type: integer
 components:
   parameters:
-    Auth_Token:
-      name: Authorization
+    auth-token:
+      name: auth-token
       in: header
       description: "Authorization token"
-      requred: true
+      required: true
       schema:
         type: string
   schemas:
@@ -1250,7 +1093,7 @@ components:
           type: string
         email:
           type: string
-        isAdmin:
+        admin:
           type: boolean
     Response_User:
       type: object
@@ -1258,6 +1101,7 @@ components:
         - username
         - name
         - email
+        - avatar_url
         - admin
       properties:
         username:
@@ -1266,54 +1110,43 @@ components:
           type: string
         email:
           type: string
+        avatar_url:
+          type: string
         admin:
           type: boolean
     Request_Problem:
       type: object
       required:
         - poster
+        - name
         - description
       properties:
         poster:
+          type: string
+        name:
           type: string
         description:
           type: string
+        reviewed:
+          type: boolean
     Response_Problem:
       type: object
       required:
-        - problemId
+        - id
         - poster
+        - name
         - reviewed
         - description
       properties:
-        problemid:
+        id:
           type: integer
         poster:
+          type: string
+        name:
           type: string
         reviewed:
           type: boolean
         description:
-          type: string
-    Request Parameter:
-      type: object
-      required:
-        - problem
-        - name
-      properties:
-        problem:
-          type: integer
-        name:
-          type: string
-    Response Parameter:
-      type: object
-      required:
-        -paramId
-        - problem
-        - name
-      properties:
-        problem:
-          type: integer
-        name:
           type: string
     Request_Test_Case:
       type: object
@@ -1321,28 +1154,26 @@ components:
         - problem
         - public
         - sampleInput
-        - expectedOutput
+        - sampleOutput
       properties:
-        tcid:
-          type: integer
         problem:
           type: integer
         public:
           type: boolean
         sampleInput:
           type: string
-        expectedOutput:
+        sampleOutput:
           type: string
     Response_Test_Case:
       type: object
       required:
-        - tcid
+        - id
         - problem
         - public
         - sampleInput
         - expectedOutput
       properties:
-        tcid:
+        id:
           type: integer
         problem:
           type: integer
@@ -1358,27 +1189,27 @@ components:
         - solver
         - problem
         - code
+        - languageId
       properties:
-        solutionId:
-          type: integer
         solver:
           type: string
         problem:
           type: integer
         code:
           type: string
-        tokens:
-          type: string
+        languageId:
+          type: integer
     Response_Solution:
       type: object
       required:
-        - solutionId
+        - id
         - solver
         - problem
         - code
         - tokens
+        - languageId
       properties:
-        solutionId:
+        id:
           type: integer
         solver:
           type: string
@@ -1386,40 +1217,39 @@ components:
           type: integer
         code:
           type: string
-        passedTests:
-          type: integer
-        compTime:
-          type: double
         tokens:
           type: string
+        languageId:
+          type: integer
+        passedTests:
+          type: integer
+        avgCompTime:
+          type: double
     Request_Comment:
       type: object
       required:
         - commenter
         - problem
-        - timestamp
         - comment
       properties:
-        commentId:
-          type: integer
         commenter:
           type: string
         problem:
           type: integer
-        timestamp:
-          type: string
         comment:
+          type: string
+        timestamp:
           type: string
     Response_Comment:
       type: object
       required:
-        - commentId
+        - id
         - commenter
         - problem
         - timestamp
         - comment
       properties:
-        commentId:
+        id:
           type: integer
         commenter:
           type: string
@@ -1428,6 +1258,46 @@ components:
         timestamp:
           type: string
         comment:
+          type: string
+    Request_Auth:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+    Response_Auth:
+      type: object
+      required:
+        - username
+        - authToken
+      properties:
+        username:
+          type: string
+        authToken:
+          type: string
+    Request_Category:
+      type: object
+      required:
+        - problem
+        - name
+      properties:
+        problem:
+          type: integer
+        name:
+          type: string
+    Response_Category:
+      type: object
+      required:
+        - id
+        - problem
+        - name
+      properties:
+        id:
+          type: integer
+        problem:
+          type: integer
+        name:
           type: string
     Error:
       type: object
