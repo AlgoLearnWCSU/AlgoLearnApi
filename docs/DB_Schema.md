@@ -14,7 +14,7 @@ isAdmin\*
 )
 
 **Problem**(
-<ins>ProblemID</ins>,
+<ins>ID</ins>,
 Name*,
 Poster*,
 IsReviewed*,
@@ -24,7 +24,7 @@ Description*
 - Poster references User
 
 **Test Case**(
-<ins>TCID</ins>,
+<ins>ID</ins>,
 Problem*,
 IsPublic*,
 SampleInput*,
@@ -34,7 +34,7 @@ SampleOutput*
 - Problem References Problem
 
 **Solution**(
-<ins>SolutionID*</ins>,
+<ins>ID*</ins>,
 Solver*,
 Problem*,
 Code*,
@@ -47,7 +47,7 @@ Tokens\*
 - Problem References Problem
 
 **Comment**(
-<ins>CommentID</ins>,
+<ins>ID</ins>,
 Commenter*,
 Problem*,
 Timestamp*,
@@ -58,7 +58,7 @@ Comment*
 - Problem References Problem
 
 **Category**(
-<ins>CategoryID</ins>,
+<ins>ID</ins>,
 Problem*,
 Name*
 )

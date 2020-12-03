@@ -21,13 +21,13 @@
 
 | Table Name | Primary Key | Foreign Key            | Uniqueness Constraint |
 | ---------- | ----------- | ---------------------- | --------------------- |
-| Problem    | ProblemID   | Poster references User | N/A                   |
+| Problem    | ID          | Poster references User | N/A                   |
 
 <br>
 
 | Name        | Type    | Range | Req / Opt | Derive / Store |
 | ----------- | ------- | ----- | --------- | -------------- |
-| ProblemID   | Int     | N/A   | Optional  | Store          |
+| ID          | Int     | N/A   | Optional  | Store          |
 | Name        | String  | N/A   | Required  | Store          |
 | Poster      | String  | N/A   | Required  | Store          |
 | IsReviewed  | Boolean | N/A   | Optional  | Store          |
@@ -39,13 +39,13 @@
 
 | Table Name | Primary Key | Foreign Key                | Uniqueness Constraint |
 | ---------- | ----------- | -------------------------- | --------------------- |
-| Test Case  | TestCaseId  | Problem references Problem | N/A                   |
+| Test Case  | ID          | Problem references Problem | N/A                   |
 
 <br>
 
 | Name         | Type   | Range | Req / Opt | Derive / Store |
 | ------------ | ------ | ----- | --------- | -------------- |
-| TestCaseId   | Int    | N/A   | Optional  | Store          |
+| ID           | Int    | N/A   | Optional  | Store          |
 | Problem      | Int    | N/A   | Required  | Store          |
 | SampleInput  | String | N/A   | Optional  | Store          |
 | SampleOutput | String | N/A   | Required  | Store          |
@@ -54,9 +54,15 @@
 
 ## Solution
 
+| Table Name | Primary Key | Foreign Key                                        | Uniqueness Constraint |
+| ---------- | ----------- | -------------------------------------------------- | --------------------- |
+| Solution   | ID          | Solver references User, Problem references Problem | N/A                   |
+
+<br>
+
 | Name        | Type   | Range | Req / Opt | Derive / Store |
 | ----------- | ------ | ----- | --------- | -------------- |
-| SolutionId  | Int    | N/A   | Required  | Store          |
+| ID          | Int    | N/A   | Required  | Store          |
 | Solver      | String | N/A   | Required  | Store          |
 | Problem     | Int    | N/A   | Required  | Store          |
 | Code        | String | N/A   | Required  | Store          |
@@ -70,13 +76,13 @@
 
 | Table Name | Primary Key | Foreign Key                                           | Uniqueness Constraint |
 | ---------- | ----------- | ----------------------------------------------------- | --------------------- |
-| Comment    | CommentId   | Commenter references User, Problem references Problem | N/A                   |
+| Comment    | ID          | Commenter references User, Problem references Problem | N/A                   |
 
 <br>
 
 | Name      | Type          | Range | Req / Opt | Derive / Store |
 | --------- | ------------- | ----- | --------- | -------------- |
-| CommentId | Int           | N/A   | Required  | Store          |
+| ID        | Int           | N/A   | Required  | Store          |
 | Commenter | String        | N/A   | Required  | Store          |
 | Problem   | Int           | N/A   | Required  | Store          |
 | Timestamp | java.sql.time | N/A   | Optional  | Store          |
@@ -88,15 +94,15 @@
 
 | Table Name | Primary Key | Foreign Key                | Uniqueness Constraint |
 | ---------- | ----------- | -------------------------- | --------------------- |
-| Category   | CategoryID  | Problem references Problem | N/A                   |
+| Category   | ID          | Problem references Problem | N/A                   |
 
 <br>
 
-| Name       | Type   | Range | Req / Opt | Derive / Store |
-| ---------- | ------ | ----- | --------- | -------------- |
-| CategoryId | Int    | N/A   | Optional  | Store          |
-| Problem    | Int    | N/A   | Required  | Store          |
-| Name       | String | N/A   | Required  | Store          |
+| Name    | Type   | Range | Req / Opt | Derive / Store |
+| ------- | ------ | ----- | --------- | -------------- |
+| ID      | Int    | N/A   | Optional  | Store          |
+| Problem | Int    | N/A   | Required  | Store          |
+| Name    | String | N/A   | Required  | Store          |
 
 <br>
 
