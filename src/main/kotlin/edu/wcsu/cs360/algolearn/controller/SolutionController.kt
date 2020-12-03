@@ -331,8 +331,6 @@ class SolutionController {
             if (runTestCount != 0)
                 time /= runTestCount
 
-            println("time: $time, passed: $passed, solutionid: ${solution.id}")
-
             solutionRepository!!.updatePassedTestsById(solution.id!!, passed)
             solutionRepository.updateAvgCompTimeById(solution.id!!, time)
         }
