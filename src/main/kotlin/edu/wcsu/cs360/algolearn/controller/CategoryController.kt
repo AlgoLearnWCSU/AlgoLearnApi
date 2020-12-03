@@ -130,7 +130,7 @@ class CategoryController{
     }
 
     @DeleteMapping(path = ["/{id}"])
-    fun deleteParameterById(@PathVariable id: Int, @RequestBody category: Category,
+    fun deleteCategoryById(@PathVariable id: Int,
     @RequestHeader("auth-token") authToken: String): ResponseEntity<Any> {
 
 
@@ -139,12 +139,7 @@ class CategoryController{
         if(oldCategory.isEmpty)
             return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
 
-        var problem:java.util.Optional<Problem?> ?=null
-
-        problem = if(category.problem == null)
-            problemRepository!!.findById(oldCategory.get().problem!!)
-        else
-            problemRepository!!.findById(category.problem!!)
+        val problem = problemRepository!!.findById(oldCategory.get().problem!!);
 
         if (problem.isEmpty)
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
@@ -153,8 +148,6 @@ class CategoryController{
                         userRepository!!.findById(authSession.get().username!!).get().isAdmin!!))
             return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 
-        if (categoryRepository!!.findById(id).isEmpty)
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
         categoryRepository.deleteById(id)
         return ResponseEntity(HttpStatus.OK)
     }
