@@ -55,14 +55,14 @@
 ## Solution
 
 | Name        | Type   | Range | Req / Opt | Derive / Store |
-| ----------- | ------ | ----- | --------- | -------------- | --- |
+| ----------- | ------ | ----- | --------- | -------------- |
 | SolutionId  | Int    | N/A   | Required  | Store          |
 | Solver      | String | N/A   | Required  | Store          |
 | Problem     | Int    | N/A   | Required  | Store          |
 | Code        | String | N/A   | Required  | Store          |
 | PassedTests | Int    | N/A   | Optional  | Store          |
 | CompTime    | Float  | N/A   | Optional  | Store          |
-| Tokens      | String | N/A   | Optional  | Store          |     |
+| Tokens      | String | N/A   | Optional  | Store          |
 
 <br>
 
@@ -97,5 +97,20 @@
 | CategoryId | Int    | N/A   | Optional  | Store          |
 | Problem    | Int    | N/A   | Required  | Store          |
 | Name       | String | N/A   | Required  | Store          |
+
+<br>
+
+## Auth
+
+| Table Name | Primary Key | Foreign Key              | Uniqueness Constraint |
+| ---------- | ----------- | ------------------------ | --------------------- |
+| Auth       | Username    | Username references User | N/A                   |
+
+<br>
+
+| Name           | Type   | Range | Req / Opt | Derive / Store |
+| -------------- | ------ | ----- | --------- | -------------- |
+| Username       | String | N/A   | Optional  | Store          |
+| EncryptedToken | String | N/A   | Required  | Store          |
 
 <br>

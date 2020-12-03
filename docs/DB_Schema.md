@@ -64,3 +64,10 @@ Name*
 )
 
 - Problem References Problem
+
+**Auth**(
+<ins>Username</ins>,
+EncryptedToken
+)
+
+- Username references User
