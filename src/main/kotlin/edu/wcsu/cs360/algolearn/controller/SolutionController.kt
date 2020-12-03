@@ -1,7 +1,7 @@
 package edu.wcsu.cs360.algolearn.controller
 
-import edu.wcsu.cs360.algolearn.controller.*
 import edu.wcsu.cs360.algolearn.model.*
+import java.util.Base64
 import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -45,6 +45,8 @@ class ResponseGetSubmission {
     var message: String? = null
     var status: Status? = null
 }
+
+var decoder: Base64.Decoder = Base64.getMimeDecoder()
 
 @RestController
 @RequestMapping(path = ["/solution"])
@@ -286,49 +288,47 @@ class SolutionController {
 
         viewmodelCoroutineScope.launch {
             delay(3000)
-            var res : ResponseGetBatch? = null
+            var res: ResponseGetBatch? = null
 
             var pending: Boolean = true
-            while(pending) {
+            while (pending) {
                 delay(2000)
-
-                println("tokens: ${solution.tokens}")
 
                 res = restTemplate!!.exchange("https://judge0.p.rapidapi.com/submissions/batch?tokens=${solution.tokens}&base64_encoded=true", HttpMethod.GET, HttpEntity("", headers),
                         ResponseGetBatch::class.java).body
 
                 pending = false
-                for(submission in res!!.submissions){
-                    if(submission.status!!.id == 1 || submission.status!!.id == 2)
+                for (submission in res!!.submissions) {
+                    if (submission.status!!.id == 1 || submission.status!!.id == 2)
                         pending = true
                 }
             }
-
 
             var time = 0.0
             var passed = 0
             var runTestCount = 0
 
             for (subNum in 0 until testCases.size) {
-                var actual: String? = null
-                var expected: String? = null
+                var actual: String?
+                var expected: String?
                 if (res!!.submissions[subNum].status!!.id == 3) {
                     time += res.submissions[subNum].time!!.toDouble()
                     runTestCount++
 
-                    actual = res.submissions[subNum].stdout
+                    val actualBytes = decoder.decode(res.submissions[subNum].stdout)
+                    actual = String(actualBytes, Charsets.UTF_8)
                     expected = testCases[subNum].sampleOutput
 
                     while (actual != null && actual.endsWith('\n'))
                         actual = actual.substring(0, actual.length - 1)
                     while (expected != null && expected.endsWith('\n'))
                         expected = expected.substring(0, expected.length - 1)
-                    if (actual != null && expected != null && actual!!.compareTo(expected!!) == 0)
+                    if (actual != null && expected != null && actual.compareTo(expected!!) == 0)
                         passed++
                 }
             }
 
-            if(runTestCount != 0)
+            if (runTestCount != 0)
                 time /= runTestCount
 
             println("time: $time, passed: $passed, solutionid: ${solution.id}")
