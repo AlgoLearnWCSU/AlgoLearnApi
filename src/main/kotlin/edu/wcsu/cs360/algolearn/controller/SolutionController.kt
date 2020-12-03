@@ -41,7 +41,7 @@ class ResponseGetSubmission {
     var memory: Int? = null
     var stderr: String? = null
     var token: String? = null
-    var compileOutput: String? = null
+    var compile_output: String? = null
     var message: String? = null
     var status: Status? = null
 }
