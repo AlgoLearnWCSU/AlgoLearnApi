@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse
 import javax.xml.bind.DatatypeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.core.env.Environment
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
@@ -61,7 +62,7 @@ data class AuthUser(
     val expires_in: Int
 )
 
-private const val SECRET_KEY = """oeRaYY7Wo24sDqKSX3IM9ASGmdGPmkTd9jo1QTy4b7P9Ze5_9hKolVX8xNrQDcNRfVEdTZNOuOyqEGhXEbdJI-ZQ19k_o9MI0y3eZN2lp9jow55FfXMiINEdt1XR85VipRLSOkT6kSpzs2x-jbLDiz9iFVzkd81YKxMgPA7VfZeQUm4n-mOmnWMaVX30zGFU4L3oPBctYKkl4dYfqYWqRNfrgPJVi5DGFjywgxx0ASEiJHtV72paI3fDR2XwlSkyhhmY-ICjCRmsJN4fX1pdoL8a18-aQrvyu4j0Os6dVPYIoPvvY0SAZtWYKHfM15g7A3HD4cVREf9cUsprCRK93w"""
+private var SECRET_KEY: String? = null
 
 fun createJWT(id: String, issuer: String, subject: String, ttlMillis: Long): String? {
     // The JWT signature algorithm we will be using to sign the token
@@ -123,20 +124,28 @@ class AuthController {
 
     private var restTemplate: RestTemplate? = null
 
+    @Autowired
+    private val osEnv: Environment? = null
+
     @PostMapping(path = ["/login/{env}"])
     fun login(@RequestBody code: AuthRequest?, @PathVariable env: String, response: HttpServletResponse): Any {
+
+        if (SECRET_KEY == null) {
+            SECRET_KEY = osEnv!!.getProperty("secrets.bcrypt_secret_key")!!
+        }
+
         val clientId: String
         val clientSecret: String
         val secureString: String
         when (env) {
             "local" -> {
                 clientId = "Iv1.2c3f97ee17f544a1"
-                clientSecret = "4106b49d691b7b0cdee692efad30d8d74e633d89"
+                clientSecret = osEnv!!.getProperty("secrets.github-secret-local")!!
                 secureString = ""
             }
             "dev" -> {
                 clientId = "Iv1.500c711bc765c8f5"
-                clientSecret = "5628f2b869e9469a7b415dda4f23ee5312144a36"
+                clientSecret = osEnv!!.getProperty("secrets.github-secret-dev")!!
                 secureString = "Secure; SameSite=None;"
             }
             else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
@@ -201,7 +210,9 @@ class AuthController {
 
     @GetMapping(path = ["/refresh/{env}"])
     fun refresh(@CookieValue refresh_token: String?, @PathVariable env: String, response: HttpServletResponse): Any {
-        println("Refreshing with refresh token: $refresh_token")
+        if (SECRET_KEY == null) {
+            SECRET_KEY = osEnv!!.getProperty("secrets.bcrypt_secret_key")!!
+        }
 
         val clientId: String
         val clientSecret: String
@@ -209,12 +220,12 @@ class AuthController {
         when (env) {
             "local" -> {
                 clientId = "Iv1.2c3f97ee17f544a1"
-                clientSecret = "4106b49d691b7b0cdee692efad30d8d74e633d89"
+                clientSecret = osEnv!!.getProperty("secrets.github-secret-local")!!
                 secureString = ""
             }
             "dev" -> {
                 clientId = "Iv1.500c711bc765c8f5"
-                clientSecret = "5628f2b869e9469a7b415dda4f23ee5312144a36"
+                clientSecret = osEnv!!.getProperty("secrets.github-secret-dev")!!
                 secureString = "Secure; SameSite=None;"
             }
             else -> return ResponseEntity<Any>(HttpStatus.NOT_FOUND)
@@ -279,6 +290,10 @@ class AuthController {
 
     @GetMapping("/redirect/{env}")
     fun redirectToLocal(@RequestParam code: String, @PathVariable env: String): Any {
+        if (SECRET_KEY == null) {
+            SECRET_KEY = osEnv!!.getProperty("secrets.bcrypt_secret_key")!!
+        }
+
         val url = when (env) {
             "local" -> "http://localhost:4200/#/home"
             "dev" -> "https://www.algolearn.dev/#/home"
