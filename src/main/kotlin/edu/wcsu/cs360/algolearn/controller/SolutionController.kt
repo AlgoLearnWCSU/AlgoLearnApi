@@ -315,16 +315,21 @@ class SolutionController {
                     time += res.submissions[subNum].time!!.toDouble()
                     runTestCount++
 
-                    val actualBytes = decoder.decode(res.submissions[subNum].stdout)
-                    actual = String(actualBytes, Charsets.UTF_8)
+                    if (res.submissions[subNum].stdout != null) {
+                        val actualBytes = decoder.decode(res.submissions[subNum].stdout)
+                        actual = String(actualBytes, Charsets.UTF_8)
+                    }
+                    else {
+                        actual = ""
+                    }
                     expected = testCases[subNum].sampleOutput
 
                     while (actual != null && actual.endsWith('\n'))
                         actual = actual.substring(0, actual.length - 1)
                     while (expected != null && expected.endsWith('\n'))
                         expected = expected.substring(0, expected.length - 1)
-                    if (actual != null && expected != null && actual.compareTo(expected!!) == 0)
-                        passed++
+                    if (actual != null && expected != null && actual.compareTo(expected) == 0)
+                        ++passed
                 }
             }
 
